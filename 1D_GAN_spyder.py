@@ -142,6 +142,7 @@ def build_discriminator():
     node = 16
     model = Sequential()
 
+    model.add(Flatten(input_shape=img_shape))
     model.add(Dense(node, input_shape=img_shape))
     model.add(LeakyReLU(alpha=0.4))
 
