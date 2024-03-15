@@ -137,7 +137,7 @@ def build_generator():
 
     return Model(noise, img)
 
-def build_discriminator(img_shape):
+def build_discriminator():
     
     node = 16
     model = Sequential()
