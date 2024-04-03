@@ -93,17 +93,7 @@ def analyzeTree(tree, branch, simpleselection=None, selection=None, index=None, 
 def rescale(x, i_min, i_max, f_min, f_max):
     rescaled_value = ((x - i_min) / (i_max - i_min)) * (f_max - f_min) + f_min
     return rescaled_value
-"""
-def performance(minmax, values, batch_size, epoch):
-    if batch_size == 2:
-        plt.hist(values, bins=25, density=False, histtype='step', color='black', alpha=1, linewidth = 2)
-        #plt.hist(np.concatenate([selected_simu["MuonsPt"][:,0], selected_simu["MuonsPt"][:,0], selected_simu["MuonsPt"][:,0]]), bins = 25, color = 'b')
-        plt.title("Generated vs Input (Epochs: {})".format(epoch))
-        plt.show()
-    else:
-        pass
-"""
-#selected_simu = analyzeTree(tree1,['MuonsPt', 'MuonsEta', 'MuonsPhi', 'invMass', 'nJets'],selection=selection)
+
 selected_simu = analyzeTree(tree1,['MuonsPt'],selection=selection)
 
 sc = StandardScaler()
@@ -119,13 +109,12 @@ brl = selected.to_list()
 ld = []
 for i in range(len(brl)):
     ld.append(brl[i]["MuonsPt"][0])
-    #ld.append(brl[i]["MuonsPt"][1])
-    #ld.append(brl[i]["MuonsEta"])
 my_array = np.array(ld).reshape(3413, len(keys_f))
 
 
 #%%
 
+#1D GAN
 img_rows = 1 
 img_cols = 1  
 img_shape = (img_rows, img_cols)
@@ -222,9 +211,9 @@ def train(data_amount, epochs, batch_size, save_interval=2000, callbacks=None):
     values = [] #tool for rescaling output
     ce_loss = [] #cross-entropy loss for G
     ce_loss1 = [] #cross-entropy loss for D
-    lr_list = [] #list with learning rate values
+    lr_list = [] #list with learning rate values for plots
     
-    x_400 = [] #nbr of epoch*400 for LR plot
+    x_400 = [] #nbr of epoch*400 for LR plots
 
     y = np.ones(len(my_array))
     X_train_raw, x_test, y_train, y_test = train_test_split(my_array, y)
@@ -236,24 +225,19 @@ def train(data_amount, epochs, batch_size, save_interval=2000, callbacks=None):
 
     X_train = []
     for i in range(len(X_train_raw)):
-        X_train.append(rescale(X_train_raw[i][0], min(X_train_raw)[0], max(X_train_raw)[0], 0, 1))
+        X_train.append(rescale(X_train_raw[i][0], min(X_train_raw)[0], max(X_train_raw)[0], 0, 1)) #rescaling data between 0 and 1
 
     half_batch = int(batch_size / 2)
     
     
     for epoch in range(epochs):
-        
-        # if epoch < 2000:
-        #     pass
-        # else:
-        #     learning_rate = 1.1
-        
-        # if epoch < 5000:
+
+        #Custom LR scheduler
+        # if epoch < 100:
         #     learning_rate = 0.1
-        # if epoch >= 5000 and learning_rate >= 1e-6:
+        # if epoch >= 100 and learning_rate >= 1e-6:
         #     learning_rate *= np.exp(-0.0001)
-        # if epoch >= 5000 and learning_rate <= 1e-6:
-        #     pass
+        
         
         #Cyclic LR
         
@@ -264,17 +248,8 @@ def train(data_amount, epochs, batch_size, save_interval=2000, callbacks=None):
         #1000 0.006 0.06 exp_range : same
         #1000 0.008 0.02 t2 : same
         #512 nodes for all the above runs
-        #2000 0.0006 0.6 t2 : pas ouf
+        #2000 0.0006 0.6 t2 : meh
         
-        
-        #LR scheduler
-        
-        # if epoch < 5000:
-        #     pass
-        # if epoch >= 1000 and learning_rate >= 1e-10:
-        #     learning_rate *= np.exp(-0.001)
-        # if epoch >= 1000 and learning_rate <= 1e-10:
-        #     pass
         
         idx = np.random.randint(0, len(X_train), half_batch)
         imgs = np.array(X_train)[idx]
@@ -356,16 +331,16 @@ start_time = time.time()
 
 best_loss = 1e10
 wait = 0
-
+#Lists used for plots
 lr_list = []
 ce_loss = []
 ce_loss1 = []
-data_amount = 20000
 stock = []
+#Parameters of train() function
+data_amount = 20000
 epochs = 20001
 batch_size= 800
 history = train(data_amount, epochs, batch_size)#, save_interval=2000)#, data_amount = 2000)
-# output : nbr epochs x batch/2 x 45
 
 end_time = time.time()
 
