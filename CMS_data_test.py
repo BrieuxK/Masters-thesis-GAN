@@ -40,52 +40,41 @@ DY.keys()
 #%%
 
 import uproot
+import matplotlib.pyplot as plt
 
 # Assuming 'file.root' contains your histogram
 file = uproot.open(path)
 
 # Assuming 'histogram_key' is the key of your histogram in the file
-histogram_key = "invM_ll"
+histogram_key = ["invM_ll", "MET_pt", "lepton0pt", "lepton1pt", "n_bJets"]
 
 # print(type(file['invM_ll']))
-
-# Access the histogram using the key
-histogram = file[histogram_key]
-
-# Convert the histogram to a hist object
-hist_object = histogram.to_numpy()
-
-#%%
-
-hist_object[0][0]
-
-#%%
-
-import matplotlib.pyplot as plt
-
-# Assuming hist_tuple is your histogram tuple from C++
-# hist_tuple[0] contains the bin counts (number of events per bin)
-# hist_tuple[1] contains the bin edges
-
-# Extract bin counts and edges
-bin_counts = hist_object[0]
-bin_edges = hist_object[1]
-
-# Print bin counts and edges for verification
-print("Bin counts:", bin_counts)
-print("Bin edges:", bin_edges)
-
-# Plot the histogram using matplotlib
-plt.figure(figsize=(10, 6))
-plt.hist(bin_edges[:-1], bins=bin_edges, weights=bin_counts, edgecolor='black', histtype='step')
-plt.xlabel('Bin')
-plt.ylabel('Counts')
-plt.title('Histogram Plot')
-plt.grid(True)
-plt.show()
+cas = 1
+for key in histogram_key:
+    histogram = file[key]
+    
+    # Convert the histogram to a hist object
+    hist_object = histogram.to_numpy()
+    
+    bin_counts = hist_object[0]
+    bin_edges = hist_object[1]
+    
+    plt.figure(figsize=(10, 6))
+    plt.hist(bin_edges[:-1], bins=bin_edges, weights=bin_counts, color='b')
+    plt.xlabel('Gev/c²', fontsize = 15)
+    plt.ylabel('Probability', fontsize = 15)
+    
+    if cas != 5:
+        plt.xlim(0,130)
+    elif cas == 5:
+        plt.xlim(0, 6)
+    plt.grid(True)
+    # plt.xlim(0,130)
+    plt.show()
 
 
 #%%
+#invM_ll, MET_pt, lepton0pt, lepton1pt, n_bJets
 
 tree_mass = DY['invM_ll;1']
 tree_MET = DY['MET_pt;1']
