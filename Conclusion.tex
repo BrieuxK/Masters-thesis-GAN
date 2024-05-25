@@ -1,0 +1,21 @@
+\section{Conclusion}
+
+\textbf{null hypothesis or alt. ?? + normalized or not distrib ? + talk about cross validation, k-fold and checking overfit + non-perturbative QCD}
+
+\begin{itemize}
+    \item Satisfying results, even if difficulty to match peaks
+    \item results on CMS data ???
+    \item Decent computational requirements
+    \item results not perfect but I strongly believe that it could be improved with longer training and with optimal hyperparameters, not done here because it requires heavy computational power
+    \item loss of accuracy while generating more observables, might be a hard limit for this approach. But, generating 35 variables shouldn't be that useful, simulating the most basic ones like MuonPt, Eta, (phi?), invMass should be enough for plenty of different tasks
+    \item way of improvement : SEFGAN (GAN + NF) or GAN + transformer instead of the generator (DNN initially)
+    \item sum up ? "I presented the challenge of finding an evidence of the 2HDM, quickly detailed the targetted channel, its advantages and disadvantages over other existing decay channels, the background to overcome in order to detect the signal, how the current techniques struggle to filter that bkg out and finally, introduced the new cGAN approached and its result on (both) MC simulation (and CMS data)"
+\end{itemize}
+
+The goal of this work was to briefly introduce the 2HDM and to detail the different mechanisms of Higgs bosons pair production and decay. what are the obstacles encountered to validate this theory with an experimental evidence.\\
+
+The results obtained with this new cGAN approach seem promising, I have been able to overcome the main weakness of the GAN-like algorithms by using different tools, in order to make the network converge to a solution. The generated samples are similar to the target distributions, despite showcasing some weaknesses, especially for sharp peaks. I strongly believe that a more effective training and a set of more adapted hyperparameters could easily solve this issue. Indeed, the training of the network was purposefully kept short for time considerations. When it comes to hyperparameters, a plausible improvement would be to create an hypergrid containing all parameters, to evaluate these selections in order to choose the most suited set of hyperparameters to the task. However, it would require heavy computational power, which I had no access to.\\
+
+In my opinion, the most limitating factor for the cGAN would be the number of variables generated. Indeed, each time the dimension of the network has been increased, it resulted in an accuracy loss. The effects were not significant, but these could quickly become overwhelming for a large number of variables. In this work, I went until three variables, knowing that training effectively a 4(or more)D cGAN would be out of my reach. In the paper this thesis is based on, the research team was able to reach five variables with convincing results. 
+
+One way of improvement would be to replace the DNN used as the cGAN generator by a generative machine learning algorithm, such as a normalizing flow or a transformer. The former has already been trialed in other fields than particle physics and shows encouraging results. About the later, sole transformers are already providing promising results in the field of high energy physics.

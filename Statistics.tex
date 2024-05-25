@@ -1,0 +1,70 @@
+\section{Statistical tests}
+
+To compare efficiently two distributions, we cannot only rely on visual techniques as histograms. A more powerful tool is needed. In the following session, I will use the \textit{Kolmogorov-Smirnov test} (KS) [\ref{KS test}] and the \textit{Z-test} [\ref{Z test}] to assess whether or not two distributions are considered as sufficently similar. Let's briefly breakdown these two tests.
+
+\subsubsection*{Kolmogorov-Smirnov}
+
+This test has several applications. However, in this work, we will use its ability to test whether or not two underlying one-dimensional probability distributions differ. In this case, the Kolmogorov–Smirnov statistic is :
+
+\begin{equation}
+\begin{aligned}
+    D_{n,m} &= \sup |F_{1,n}(x) - F_{2,m}(x)|, \\
+    \text{with } F_{a,b} &= \frac{\text{number of elements in the sample $\leq t$}}{n} = \frac{1}{n} \sum^n_{i=1} \textbf{1}_{X_i \le t},
+\end{aligned}
+\end{equation}
+with $n$, $m$ the number of events in the distribution, $t$ a fixed parameter and $F_{a,b}$ an empirical distribution function (commonly also called an empirical cumulative distribution function) which can be expressed using a \textit{Bernouilli random variable} : $\textbf{1}_{X_i \le t}$. From there, we can compute the p-value, the probability of obtaining test results at least as extreme as the result actually observed. If this value is \textbf{greater} than a specified threshold (for instance, $0.05$), we conclude a significant association between the two populations.
+In addition to the p-value, the \textit{scipy} function used also returns the KS statistic. It represents the maximum distance between the two empirical cumulative distribution functions of the two samples.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1]{KS statistic.png}
+    \caption{KS statistic (in black) between two empirical cumulative distribution functions (red and blue).}
+    \label{fig:enter-label}
+\end{figure}
+
+%\subsubsection*{Z-test}
+
+%The Z-test is a statistical test used to determine whether or not two population means are different given the standard deviation and a large sample size. The approach used is :
+
+%\begin{equation}
+%    Z = \frac{\Bar{x}_1 - \Bar{x}_2}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}},
+%\end{equation}
+%with $\Bar{x}_i$ the mean of sample \textit{i}, $\sigma_i$ the standard deviation of sample \textit{i} and $n_i$ the size of sample \textit{i}.
+%The value of $Z$ can be positive or negative. However, only its norm is interesting. In this work we have considered three cases :
+%\begin{enumerate}
+%    \item $Z < 2$ : the samples are very similar
+%    \item $Z > 3$ : the samples are different
+%    \item $ 3 \geq Z \geq 2$ : the samples are vaguely similar
+%\end{enumerate}
+
+%\subsubsection*{Wilcoxon signed test}
+
+%The Wilcoxon signed test [\ref{wilcoxon}] is a non-paramteric test with several applications. However, we will use its ability to test whether or not two underlying one-dimensional probability distributions differ. The test compares the medians of two samples instead of their means. The differences between the median and each individual value for each sample is calculated. Values that come to zero are removed. Any remaining values are ranked from lowest to highest. Lastly, the ranks are summed. If the rank sum is different between the two samples it indicates statistical difference between samples.
+
+%\begin{equation}
+%\begin{aligned}
+%    z &= \frac{W - 0.5}{\sqrt{\frac{n(n+1)(2n+1)}{6}}}, \\
+%    W &= |\sum[sgn(x_2 - x_1)R]|,
+%\end{aligned}
+%\end{equation}
+%with $x_i$ the data, $n$ the size of the samples and $R$ the rank.
+%We set an arbitrary threshold for the result of this test. If the value of the Wilcoxon test exceeds the threshold, it means distributions are similar.
+
+\subsubsection*{$\chi^2$ test}
+
+The $\chi^2$ test is a statistical test used to determine whether or not there is a significant association between two distributions. There exist several variant of this test, we will use the most used one : the Pearson variant. It follows the formula : 
+\begin{equation}
+    \chi^2 = \sum_{i=1}^n = \frac{(O_i - E_i)^2}{E_i},
+\end{equation}
+with $O_i$ the number of observations of type i, $E_i$ the expected (theoretical) count of type i.
+From there, we can compute the p-value. If this value is \textbf{less} than a specified threshold (for instance, $0.05$), we conclude a significant association between the two populations. Once again, the $\chi^2$ statistic is provided by the \textit{scipy} function, it represents the the discrepancy between the observed and expected frequencies. If this value is large, the two distributions are considered as different.
+
+\subsection{Mutual Information}
+
+The mutual information (MI) is a commonly used quantity in information theory that measures the mutual dependence between two random variables. It quantifies the amount of information obtained about one variable by observing the other variable. The MI is tightly bounded to the concept of \textit{entropy}, a notion that quantifies the expected amount of information held in a specific variable.\\
+In this work, I prefer the use of MI over the score of correlation, since the former only measures linear dependency between variables \footnote{For instance, the correlation score between $\cos{x}$ and $\sin{x}$ is tiny, while their dependency to each other is obvious.}.\\
+The mathematical formulation of MI in our case is :
+\begin{equation}
+    I(X;Y) = \sum_x \sum_y P_{(X,Y)} (x,y) \log \left( \frac{P_{(X,Y)(x,y)}}{P_X(x) P_Y(y)} \right),
+\end{equation}
+with $ P_{(X,Y)}$ the joint probability mass function of $X$ and $Y$, $P_X$ and $P_Y$ the marginal probability mass function of $X$ and $Y$ respectively.\\

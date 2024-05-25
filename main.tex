@@ -1,0 +1,1056 @@
+\documentclass [12pt] {article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{layout} %plugin pour les marges
+\usepackage{geometry} %pour changer les marges de la page
+\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
+\usepackage{setspace} %interlignes
+\usepackage{comment}  %ajouter des commentaires
+\usepackage[pdftex]{graphicx} %insérer des images
+\usepackage{amsmath}
+\usepackage{tabularx} %tableaux
+\usepackage{todonotes}
+\usepackage{amsmath, amsfonts, amssymb}  %faire des systemes d'equations
+
+\usepackage{tikz}
+\usepackage{pgf-pie}
+
+\usepackage{setspace} %interlignes
+\usepackage{soul}     %soulignement
+\usepackage{siunitx}  %symbole angstrom
+\usepackage{hyperref} %Pour avoir des liens cliquables
+\numberwithin{equation}{section} %Numéroter les équations par chapitre
+\numberwithin{figure}{section}   %Numéroter les figures par chapitre
+\usepackage{multicol} %adjoindre des images
+\usepackage{cases} 
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{csquotes}
+\usepackage{biblatex}
+\usepackage{caption}
+\usepackage{floatrow}
+\usepackage{geometry}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=black,
+     citecolor=black
+}
+\urlstyle{same}
+\pagestyle{headings}
+\usepackage[style=numeric]{biblatex}
+\title{Bibliography management: \texttt{biblatex} package}
+\addbibresource{bibli.bib}
+\setlength{\parindent}{0.5cm}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\Hquad}{\hspace{0.35em}}
+\newcommand{\HHquad}{\hspace{0.2em}}
+\captionsetup{position=below}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+	\center
+	\center 
+		\textsc{\LARGE Université Catholique de Louvain}\\ [0,5cm]
+		\textsc{\Large Faculté des sciences}\\[0.3cm]
+		\textsc{\Large Ecole De Physique} \\[0.3cm]
+		%\textsc{\large  Master I Physique: Finalité spécialisée en Physique Médicale}
+		
+		%\vfill
+    %\vspace*{0.5 cm}
+    
+    \textsc{\LARGE LPHYS2336A : Neutrino Physics}\\[0.2 cm]
+    
+    %\textsc{\LARGE Detectors and Sensors}\\ [0.2 cm]
+    
+	\rule{\linewidth}{0.2 mm} \\[0.4 cm]
+	\fbox{
+	\begin{minipage}{0.8 \textwidth}
+	\centering
+	    	{\huge \bfseries Daya Bay Neutrino Experiment}\\
+	¨%\rule{\linewidth}{0.2 mm} \\[1.0 cm]
+	\end{minipage}
+
+	}
+
+     \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 1]{The_Daya_Bay_Antineutrino_Detector_(8056998030).jpg}
+    \end{figure}
+	
+	%\vfill
+	\vspace{0.5 cm}
+	
+	
+\begin{minipage}{0.4\textwidth}
+	\begin{flushleft} \large
+	\emph{Author}\\
+    	Kaczmarczyk Brieux\\
+		
+		
+	\end{flushleft}
+\end{minipage}~
+\begin{minipage}{0.4\textwidth}
+	\begin{flushright} \large
+		\emph{Teacher}\\ 
+		   Lemaitre Vincent\\
+		  
+	\end{flushright}
+\end{minipage}\\[2 cm]
+  \includegraphics[scale = 0.15]{LogoUCL.png}\\[0.2cm]	% logo université
+  	
+           
+            
+	\vfill\vfill\vfill 	
+	{\large\today}
+
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section*{Acknowledgement}
+
+Merci : Agni, Christophe, Florian, Oğuz.\\
+Chloé\\
+Kot Astro\\
+Gwen\\
+
+\newpage
+
+\section*{Introduction}
+
+The interest in studying Higgs pair production is motivated by two aspects. Firstly, this process, involving the coupling of the Higgs boson to itself ($H \rightarrow HH$), offers a unique way to probe the Higgs potential, potentially shedding light on questions relative to the fabric of our Universe. Secondly, Higgs pair production is an extremely rare phenomenon within the Standard Model, rendering it highly sensitive to potential new physics phenomena, especially at unprecedented energy scales. Additionally, the exploration of extended scalar sectors, as predicted by many models beyond the Standard Model, further underscores the significance of studying processes like Higgs pair production. However, this investigation encounters formidable challenges posed by overwhelming backgrounds from standard model processes.
+
+All these experiments are being carried out inside particle accelerators and colliders. These are essential tools in the field of high-energy physics, providing researchers with the means to probe the fundamental constituents of matter and light the mysteries of the universe. Among these, the Large Hadron Collider (LHC) stands out as the most powerful particle accelerator ever built. It accelerates beams of protons to unprecedented energies and collides them head-on at several interaction points, where massive detectors such as the Compact Muon Solenoid (CMS) are positioned.
+
+Nevertheless, the lifetimes of some of these particles are so short that they cannot even reach the first layer of our particle detectors. Hence, their decay products are our only tool to get informations of the presence of particles such as bosons. However, with the multitude of events happening inside a particle detector, the final state signature we are interested in could be faked in many different way. Thus, in high energy physics, distinguishing the background from the signal is a task of an extreme importance. At the moment, the strategy used to filter out this background suffers from different shortcomings. Resulting in a imperfect filtering of background events, and indeed, a mediocre isolation of the targeted final state signature. The goal of this project is to introduce a new and, potentially more effective, background modelling strategy in order to improve the performance of current analysis of the CMS data.
+
+Unfortunately, such as task cannot be succesfully completed by mere human understanding. We will have to use a very powerful tool in order to process the humongous quantity of data we are facing : neural networks. To be more specific, deep neural networks will be the key to such a problem. These have already proved their worth in the field of high energy physics through modeling, signal identification and more. In this thesis, I will use a specific architecture of deep neural networks : the conditional Generative Adversarial Network (cGAN). This architecture is a variant of the standard GAN, where two deep neural networks are engaged in a competitive learning process. On one hand the generator learns to produce synthetic samples similar to the background distribution, while the discriminator learns to distinguish real data from synthetic ones. By training a cGAN on samples of background events, we aim to develop a sophisticated understanding of the underlying patterns and correlations, allowing us to generate fake but plausible samples reproducing the statistical properties of the background. In order to discriminate this background from the signal more efficiently in the future experiments.
+
+In this thesis, we will start by a succinct explanation of the Standard Model, detailing both its remarkable successes and its recognized shortcomings. We will briefly explore how these deviations from the Standard Model motivate the needs of beyond Standard Model physics. One such theory is known as the \textit{2HDM} will be delved for its potential to address multiple of these shortcomings.\\
+Then, we will explore one of the numerous available ways to obtain evidence supporting the proposed theory. We will list the common problems associated with other options and explain why the chosen option appears to be a great trade-off. The current state of research in this field will be discussed, highlighting why it might seem to be at a dead-end and how the approach discussed in this report might pave a new way forward.\\ 
+
+Once this theoretical work about physics done, it will be time to dive into the realm of deep neural networks. We will break down the fundamental concepts, all the process leading to the final architecture of the network and finally a short summary of the former. Armed with this technical understanding, a detailed development of the network will be done. We will disucss the main obstacles encountered and how they were overcome. Then, the main results will be presented and discussed.\\
+
+We will conclude this small chapter in the vast book of Physics by describing what this method has achieved so far, outlining its hard limitations, and exploring the different tools that could be used to address these challenges. By doing so, we aim to illustrate how this method could help others continue writing the forthcoming chapters in the ongoing story of physics.
+
+%we will merge it with our knowledge of physics to carefully describe the background facing us, and how to select judiciously the right kinematic variables capable of efficiently characterizing the Drell-Yan background.\\
+%In this thesis, we embark on a journey to harness the power of deep neural networks, specifically Generative Adversarial Networks (GANs), to model and control the background in Higgs pair production events. By training a GAN on samples of background events, we aim to develop a sophisticated understanding of the underlying patterns and correlations, allowing us to generate synthetic samples that faithfully reproduce the statistical properties of the background. This novel approach promises to enhance our ability to distinguish signal from background and unlock new avenues for discovery at the frontier of particle physics.
+
+
+\newpage
+
+\section{Two Higgs Doublet Model (2HDM)}
+
+Since its formulation in the mid 70's, the Standard Model (SM) has achieved numerous accomplishements. From the beginning, it has been able to describe three of the fundamental forces being : the electromagnetic, weak and strong interactions ; aswell as classifying all known particles at that time. Since then, the evidence of other particles predicted by the SM such as : W/Z bosons (1983), top quark (1995), tau neutrino (2000) and the Higgs boson (2012) have added further confidence to this theory.\\
+
+Despite all these succesful achievements, the SM has proven multiple times several shortcomings. The lack of gravitation in its formulation, translated by the incompatibility to reunite the SM with the most succesful theory about gravitation known : the General Relativity. To this day, several experiments have observed neutrinos oscillations, implying the existence of massive neutrinos; which is not part of the original SM. Same goes for the baryon asymmetry or for the existence of dark matter and dark energy. Thus, the necessity of new physics is obvious.\\
+
+Despite these issues, the SM remains a very solid framework, exhibiting a wide range of phenomena, including spontaneous symmetry breaking, anomalies, and non-perturbative behavior. It can and should be used as a basis for building more exotic models that incorporate hypothetical particles, extra dimensions, and elaborate symmetries to explain experimental results at variance with the SM. Hence, the Standard Model will be the giant's shoulders on which we will stand.\\
+
+The field of beyond-SM theories is broad with theories such as supersymmetry, String theories or loop quantum gravity which are notable attempts to build a \textit{Theory of everything}. However, we won't be as presumptuous in this work, we will focus on a simpler but yet, promising extension of the SM : the two Higgs Doublet Model (2HDM). As its name suggests, this model contains one more Higgs doublet than the SM, which leads to a richer phenomenology in the existence of five physical states of the Higgs boson : $H, h, A, H^\pm$. This model can be described by 6 parameters, four for the masses of the Higgs state : $m_H, m_h, m_A, m_{H^\pm}$, one for the ratio of the two vacuum expectation values : $\tan \beta$ and one for the mixing angle which diagonalizes the mass matrix of h and H : $\alpha$. Instead of only two for the SM : mass of the Higgs : $m_h$ and a single vacuum expectation value : $v$.\\
+
+With all these additional parameters taken into account, the 2HDM would be able to explain several shortcomings of the SM, thus, allowing particle physics to perform a great leap forward in the understanding of our Universe. However, despite the mathematical credibility of this model, it lacks something primordial so far : an experimental verification of this theory. But before tackling this, let's delve into the theoretical frameworks of these models.
+
+\subsection{The Standard Model}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1]{Standard_Model_table.png}
+    \caption{The fundamental particles of the Standard Model}
+    \label{prod}
+\end{figure}
+
+Before going into details about the 2HDM, it is important to mention the Standard Model (SM). We will simply go straight to the fundamentals of the SM by mentionning two crucial principles : first the extension of the gauge invariance principle as a local concept, and second the spontaneous symmetry breaking mechanism . The introduction of local gauge invariance generates the gauge bosons as well as the interactions of these gauge bosons with fermions, and also, if the gauge group is non abelian, among the gauge bosons themselves. The combination of local gauge invariance with the spontaneous symmetry breaking mechanism leads to the Higgs mechanism which generates the masses of weak vector bosons and fermions. Since the 2HDM is an extension of the symmetry breaking sector, in this chapter, we are going to review the mechanism of electroweak symmetry breaking and focus on the Higgs particle of the SM.
+
+\subsubsection{Starting from electroweak interaction}
+
+The Lagrangian of the electroweak interaction is :
+
+\begin{equation}
+    \mathcal{L}_{EW} =  - \frac{1}{4} W^{\mu \nu}_a W^a_{\mu \nu} - \frac{1}{4} B^{\mu \nu} B_{\mu \nu} + |D_\mu \Phi|^2 - V(\Phi),
+\end{equation}
+\begin{equation}
+    V(\Phi) = \mu^2 + |\Phi|^2 + \lambda |\Phi|^4.
+\end{equation}
+where $\Phi$ is a complex scalar doublet with hypercharge $Y = +1$ under $SU(2)_L$ and $V(\Phi)$ is the most general, renormalisable potential.
+The strength tensors are written as :
+\begin{equation}
+    W^a_{\mu \nu} = \partial_{\mu} W^a_{\nu} \HHquad - \HHquad \partial_{\nu} W^a_{\mu} \HHquad + \HHquad g \epsilon^{abc}W^b_{\mu} W^c_{\nu} 
+\end{equation}
+and
+\begin{equation}
+    B_{\mu \nu} = \partial_{\mu} B_{\nu} \HHquad + \HHquad \partial_{\nu} B_{\mu},
+\end{equation}
+$W^a_{\mu \nu}$ and $B_{\mu \nu}$ are the gauge fields of the symmetry group $SU(2)_L$ and $U(1)_Y$, respectively.\\
+It is also important to note that, in order to obtain local gauge invariance, the derivatives need to be changed into covariant derivatives such as :
+\begin{equation}
+    D_{\mu} \HHquad = \HHquad \partial_{\mu} - igW^a_{\mu}T_a - ig'\frac{Y}{2}B_{\mu}
+\end{equation}
+where $T^{a} = \frac{\sigma^a}{2}$ with $\sigma$ being the Pauli matrices.\\
+Two separate cases emerge here, depending on the sign of $\mu^2$. For $\mu^2 > 0$, the state of the lowest energy achievable corresponds to the annulement of the fields corresponding to :
+\begin{equation}
+   \langle \phi \rangle_0 &= \begin{pmatrix}
+                        0 \\
+                        0
+                    \end{pmatrix} \\
+\end{equation}
+thus, there is no spontaneously symmetry breaking.\\
+For $\mu^2 < 0$, , the symmetry is spontaneously broken, in this case the fundamental state is not unique anymore, it is actually a set of degenerated state of minimum energy corresponding to a circle : 
+\begin{equation}
+   \langle \phi \rangle_0 &= \frac{1}{\sqrt{2}} \begin{pmatrix}
+                        0 \\
+                        v
+                    \end{pmatrix} \\
+                    \quad \text{with} \Hquad v = \sqrt{\frac{-\mu^2}{\lambda}} \Hquad \text{(real)}
+\end{equation}
+with $v$ being the vacuum expectation value (vev), which will be introduced in more details in the following section.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.5]{Higgs-potential-before-left-and-after-right-spontaneously-symmetry-breaking.png}
+    \caption{Higgs potential without and with spontaneous symmetry breaking}
+    \label{fig:enter-label}
+\end{figure}
+
+The doublet field $\phi$ can be expressed using the vev, the Higgs field and three Goldstone bosons $\phi_{1,2,3}$ :
+
+\begin{equation}
+    \Phi &= \frac{1}{\sqrt{2}} \begin{pmatrix}
+                        \phi_1^+ + i\phi_2 \\
+                        v \HHquad + \HHquad H \HHquad + \HHquad i \phi_3
+                    \end{pmatrix}
+\end{equation}
+There are three massive vector bosons, which we will define as follows :
+\begin{equation}
+    W^{\pm}_{\mu} = \frac{1}{\sqrt{2}}( W^1_{\mu} \mp i W^2_{\mu}), \quad Z^0_{\mu} = \frac{1}{\sqrt{g^2 + g'^2}} (g W^3_{\mu} - g' B_{\mu})
+\end{equation}
+%The fourth vector field is orthogonal to $Z^0_{\mu}$, here is why it remains massless, it doesn't appear in the lagrangian :
+The fourth vector field is orthogonal to $Z^0_{\mu}$, it doesn't appear in the lagrangian :
+\begin{equation}
+    A_{\mu} = \frac{1}{\sqrt{g^2 + g'^2}} (g W^3_{\mu} + g' B_{\mu})
+\end{equation}
+Mass terms are terms thar are bilinear in $W^{\pm}, Z, A$ :
+\begin{equation}
+    m_W = g \frac{v}{2}, \quad m_Z = \frac{v}{2} \sqrt{g^2 + g'^2}, \quad m_A = 0.
+\end{equation}
+Hence, the two massive gauge bosons are related via :
+\begin{equation}
+    \frac{m_W}{m_Z} = \frac{g}{\sqrt{g^2 + g'^2}} = \cos \theta_W
+\end{equation}
+
+In the case of non-abelian $SU(2)_L \times U(1)_Y$ electroweak theory, three of the gauge bosons require a mass : $W^{\pm}$ and $Z$, while the last gauge boson, the $\gamma$ stays massless knowing that the electric charged must be conserved through an exact symmetry.\\
+By spontaneously breaking the symmetry $SU(2)_L \times U(1)_Y$ to $U(1)_{QED}$, three Goldstone bosons have been absorbed by the $W^{\pm}$ and Z bosons to form their longitudinal components and to get their masses. Since the $U(1)_Q$ symmetry is unbroken, the $\gamma$, which is associated to its generator, remains massless as it should be.\\
+
+The physical bosons are, indeed, the photon A and the $W^\pm$ and Z bosons. In fact, $W^\pm$ bosons are mass eigenstates while $W^3_\mu$ and $B_\mu$ mix to give the two physical bosons $A_\mu$ and $Z_\mu$ :
+\begin{equation}
+    \begin{pmatrix}
+                        Z^0_\mu \\
+                        A_\mu
+                    \end{pmatrix} \\
+        &= \begin{pmatrix}
+                        \cos( \theta_W) & -\sin(\theta_W)\\
+                        \sin(\theta_W) & \cos(\theta_W)
+                    \end{pmatrix} \\
+    & \begin{pmatrix}
+                        W^3_\mu \\
+                        B_\mu
+                    \end{pmatrix} \\
+\end{equation}
+with $m_A = 0$ and $m_W = m_Z \HHquad \cos \theta_W$, where $\theta_W$ is called the weak mixing angle and 
+\begin{equation}
+    \cos \HHquad \theta_W = \frac{g}{\sqrt{g^2 + g'^2}}, \quad \sin \HHquad \theta_W = \frac{g'}{\sqrt{g^2 + g'^2}}
+\end{equation}
+With the same doublet of scalar fields $\phi$, we can also generate the fermion masses. Indeed, we can add $SU(2)_L \times U(1)_Y$ gauge-invariant Yukawa interactions between  the scalar fields and the fermions which are $SU(2)$ doublets or singlets.\\
+
+Thus, with the same isodoublet $\phi$ of scalar fields, we have generated the masses of both the weak vector bosons $W^\pm, Z$ and the fermions, while preserving the gauge symmetry in the lagrangian.
+
+\subsection{The Higgs boson}
+
+The Lagrangian of the Higgs field can be written as
+
+\begin{equation}
+    \mathcal{L} = \frac{1}{2} \partial_{\mu} H \partial{\mu} H - \lambda v^2 H^2 - \lambda v H^3 - \frac{\lambda}{4} H^4.
+\end{equation}
+With the mass of the Higgs boson being
+
+\begin{equation}
+    m^2_H = 2 \lambda v^2 = -2 \mu^2 \approx 125.3 \pm 0.4 \HHquad (stat.) \pm 0.5 \HHquad (syst.) \HHquad GeV/c^2
+\end{equation}
+where $\lambda$ is the Higgs self-coupling parameter.
+From the previous lagrangian, several Higgs coupling can be derived using Feynman rules [\ref{uliege}] :
+\begin{equation}
+    g_{HHH} \HHquad = \HHquad 3 \frac{m^2_H}{v} \quad , \Hquad g_{HHHH} \HHquad = \HHquad 3 \frac{m^2_H}{v^2}.
+\end{equation}
+Altough Higgs couplings to fermions and bosons will be mentioned in a latter section, we can mention the couplings to these particles now. These couplings being :
+\begin{equation}
+    g_{Hf\Bar{f}} \HHquad = \HHquad  \frac{m_f}{v} \quad, \Hquad g_{HVV} \HHquad = \HHquad  -2 \frac{m^2_V}{v}  \quad, \Hquad g_{HHVV} \HHquad = \HHquad -2 \frac{m^2_H}{v^2} \Hquad ,
+\end{equation}
+with $v$ being the vacuum expectation value, with the accepted value of
+\begin{equation}
+    v \HHquad = \HHquad \sqrt{\frac{\mu^2}{\lambda}} \HHquad \approx \HHquad 246.22 \HHquad GeV [\ref{vev}].
+    \label{vev}
+\end{equation}
+This value can be fixed in terms of the $W$ mass determined by the value of the Fermi constant $G_F$ :
+\begin{equation}
+    m_W = g\frac{v}{2} = \sqrt{\frac{\sqrt{2} g^2}{8 G_\mu}} %\left( \frac{\sqrt{2} g^2}{8 G_\mu}\right)^\frac{1}{2}
+\end{equation}
+This happens in muon decay, which occurs through gauge interactions mediated by W boson exchange, is a particular process through which $G_F$ is measured very accurately.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.35]{muon_decay_Gf.png}
+    \caption{Muon decay according to Fermi's theory of weak interaction. The coupling constant is $G_F$}
+    \label{fig:enter-label}
+\end{figure}
+
+The Higgs couplings to fermions and bosons are predicted to be proportional to the corresponding particle masses, or squared-masses when it comes to boson masses. So, in Higgs production and decay processes, the dominant mechanisms involve the coupling of the Higgs boson to the heaviest particles available, in other words : $W^\pm$, $Z$ and the third generation of quarks and leptons.
+
+\subsubsection*{Higgs decay channels}
+
+Taking into consideration the previous section, it's no surprise to have the most dominant decays for Higgs boson to be $b \Bar{b}$ and $WW$. 
+%At higher masses, the $WW$ channel remains the most dominant followed closely by $ZZ$ and from $350$ GeV, the $t \Bar{t}$ decay arises as the third most dominant. 
+
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[scale = 0.6]{pie_chart.jpg}
+%    \caption{Branching ratios of the Higgs boson decays.}
+%    \label{higgs_decay_figure}
+%\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale = 0.8]
+        \pie[rotate = 90, color = {red, blue, green, orange, pink}]{57/$b \Bar{b}$, 21/$W^- W^+$, 9/$gg$, 6/$\tau^- \tau^+$, 7/Other}
+    \end{tikzpicture}
+    \caption{Branching ratios of the Higgs boson decays.}
+    \label{h decay}
+\end{figure}
+
+The category "Other" contains decays such as : $ZZ$, $cc$, $\gamma \gamma$, $\mu \mu$ and, theoretically, every massive particles since the Higgs boson couples to all of them.
+
+\subsection{Flaws in the SM}
+
+As mentioned earlier, the SM isn't an absolute model. There remain some points where it collides with experimental observations performed along the years. Let's go through some of them :
+
+\subsubsection*{Massive neutrinos}
+
+In the SM, neutrinos are considered as massless and only left-handed. However, it has been observed that these particles are, in fact, massive ! This has been shown through cosmological experiences [\ref{neutrino mass}] that have been able to determine an order of magnitude for neutrinos mass, being sub-eV, way lighter than other particles. Moreover, the concept of neutrino oscillations come from the mixing of the mass eigenstates and the flavour eigenstates. Hence, a neutrino of a specific flavour transitioning into a neutrino of another flavour during free propagation implies that, at least, one of these neutrinos must be massive. \\
+
+\subsubsection*{Matter-antimatter (a)symmetry}
+
+If the distribution of matter and antimatter was perfectly balanced, the current universe would be empty, each particle of matter would had been annilihated while interacting with a particle of antimatter.\\ However, since our Universe is not empty, it is definitely not the case ! In other words, there must have been an imbalance between matter and antimatter in the early Universe. A necessary condition to this excess of baryonic matter over antibaryonic one, is the baryon number violation. But C-symmetry violation is also needed so that the interactions which produce more baryons than anti-baryons will not be counterbalanced by interactions which produce more anti-baryons than baryons. CP-symmetry violation is similarly required because otherwise equal numbers of left-handed baryons and right-handed anti-baryons would be produced, as well as equal numbers of left-handed anti-baryons and right-handed baryons. Finally, the interactions must be out of thermal equilibrium, since otherwise CPT symmetry would assure compensation between processes increasing and decreasing the baryon number. The violation of baryon number, of C-symmetry, of CP-symmetry and interactions out of thermal equilibium are called the Sakharov conditions [\ref{Sakharov}].\\
+However, the imbalance described by the SM is not large enough to correspond to our observations.
+
+\subsubsection*{Dark Matter}
+
+Thanks to cosmological observations, researchers have been able to highlight an inconsistence between the expected behaviour of our Galaxy compared to its actual behaviour, especially at great radiuses. Indeed, these regions seem to possess a greater energy density than what our telescopes tend to observe.\\
+The possible explanation introduced to explain such phenomena is the introduction of a so-called \textit{Dark Matter} (DM), which would be a type of matter insensitive to electromagnetical interactions, electrically neutral, very long-lived (or completely stable) and massive at the same time. In other words, its only interactions would be with the Higgs boson and potentially through weak interactions (WIMPs [\ref{wimps}]). Moreover, it is know that this dark matter is cold [\ref{cold DM}], this means that it has a non-relativistic velocity distribution.\\
+There is no sign of such a type of matter in the SM. However, if DM interacts weakly with the SM, it could be produced at the LHC experiments escaping the detector and leaving a large missing transverse momentum as its signature. [\ref{DM1}] [\ref{DM2}]
+
+
+\subsubsection*{Hierarchy problem}
+
+The hierarchy problem [\ref{Hierarchy}] tends to be the term used by physicists to describe a very important difference between the scale of mass of the electroweak bosons in one hand ($m_{W,Z,H} \approx 100 \HHquad GeV$[\ref{W mass}]) and on the other, the Planck mass ($m_{Planck} \approx 10^{19} \HHquad GeV $). In the SM, the mass term for the higgs boson can be written as :
+\begin{equation}
+    m^2 H^\dag H
+\end{equation}
+it is invariant under gauge and global symmetry on H, meaning that the higgs mass parameter can be modified by radiative corrections. Thus, the Higgs mass is modified by corrective terms from every scale with which it interacts, these terms being proportional to those scales. As mentionned earlier, those scales can go all the way up to the Planck mass, and so, the mass of the Higgs according to quantum field theory expectations is much (much) higher than the experimental result ($m_H \approx 125 \HHquad GeV$ [\ref{higgs mass}]). Currently, a "shaky" solution is the numerical cancellation of terms that results in the Higgs mass being reduced to its proper experimental values. However, relying on numerical cancellation is uncomfortable for many physicists.\\
+One of the expected solution to this hierarchy problem is the use of SUper-SYmmetry (SUSY). Indeed, this theory involves the existence of plenty of other particles which could perform so-called \textit{miraculous cancellation} on the additionnal loops in the Higgs self-energy, solving this problem. Unfortunately, SUSY remains undiscovered as yet at the LHC and at all the other particle accelerator.
+
+
+\subsection{The 2HDM}
+The two-Higgs-Doublet Model (2HDM) is the most straightforward extension of the SM with one extra scalar doublet which contains more physical neutral and charged Higgs fields. Therefore, this model contains two complex doublets of scalar fields, $\phi_1$ and $\phi_2$:
+
+\begin{equation}
+    \phi_i &= \begin{pmatrix}
+                        \phi_j^+ \\
+                        \phi_j^0
+                    \end{pmatrix} \\
+    &= \begin{pmatrix}
+                        \phi_1 + i \phi_2 \\
+                        \phi_3 + i \phi_4
+                    \end{pmatrix} \\
+\end{equation}
+with j = 1, 2. Thus, there are now eight degrees of freedom that will be used to give masses to the gauge bosons, instead of only four in the SM. In some cases, after symmetry breaking, three Goldstone bosons provide the longitudinal modes of the bosons $W^{\pm}$ and Z, that become massive. And there will remain five physical Higgs bosons : three neutral ones H, h, A and two charged ones $H^{\pm}$. Where H and h are scalar bosons such as $m_H > m_h$ and A is a pseudoscalar boson.\\
+The most general scalar potential contains 14 parameters with CP-violating, CP-conserving and charge-violating minima. However, we can use several simplifying assumptions. First, we assume CP-conservation in Higgs sector, in order to draw a separation between scalars and pseudoscalars. Then, CP is not spontaneously broken. Lastly, discrete symmetries eliminate all quartic terms odd in either of the doublets from the potential, including a term wich softly breaks these symmetries. Under those assumptions, we can now formulate the most general scalar potential for two doublets $\Phi_1$ and $\Phi_2$ with $Y \HHquad = \HHquad +1$ as :
+
+\begin{equation}
+\begin{split}
+    V &= m_{11}^2 \Phi^\dag_1 \Phi_1 + m_{22}^2 \Phi^\dag_2 \Phi_2 - m_{12}^2 (\Phi^\dag_1 \Phi_2 + \Phi^\dag_2 \Phi_1)+ \frac{\lambda_1}{2}(\Phi^\dag_1 \Phi_1)^2 + \frac{\lambda_2}{2}(\Phi^\dag_2 \Phi_1)^2 \\
+    &\quad + \lambda_3 \Phi^\dag_1 \Phi_1 \Phi^\dag_2 \Phi_2 + \lambda_4 \Phi^\dag_1 \Phi_2 \Phi^\dag_2 \Phi_1 + \frac{\lambda_5}{2} \left[ (\Phi^\dag_1 \Phi_2)^2 + (\Phi^\dag_2 \Phi_1)^2 \right],
+\end{split}
+\end{equation}
+where all the parameters are real.\\
+As mentionned earlier, with two complex scalar SU(2) doublets there are eight fields :
+\begin{equation}
+    \Phi_a &= \begin{pmatrix}
+                        \phi_a^+ \\
+                        (v_a \HHquad + \HHquad \rho_a \HHquad + \HHquad i \eta_a)/\sqrt{2}
+                    \end{pmatrix}, \quad a \HHquad = \HHquad 1,2.
+\end{equation}
+With $\phi^\pm$ corresponding to charged scalar bosons, $\eta$ to pseudoscalars and $\rho$ to scalars.\\
+We can use these parameters to rewrite the scalars and pseudoscalar bosons as :
+\begin{equation}
+    A \HHquad = \HHquad \eta_1 \sin \beta \HHquad - \HHquad \eta_2 \cos \beta 
+\end{equation}
+\begin{equation}
+    h \HHquad = \HHquad  \rho_1 \sin \alpha \HHquad - \HHquad \rho_2  \cos \alpha \quad and \quad H \HHquad = \HHquad -\rho_1 \cos \alpha \HHquad + \HHquad \rho_2  \sin \alpha
+\end{equation}
+Notice that the standard SM higgs boson would be :
+\begin{equation}
+\begin{aligned}
+    H^{SM} \HHquad &= \HHquad \rho_1 \cos \beta \HHquad + \HHquad \rho_2 \sin \beta \\
+    &= h \sin (\alpha - \beta) \HHquad - \HHquad H \cos(\alpha - \beta)
+\end{aligned}
+\end{equation}
+
+\subsubsection*{The different types of 2HDM}
+
+Two-Higgs-doublet models can introduce flavor-changing neutral currents (FCNC) which have not been observed so far and are considered as heavily suprressed by the GIM mechanism [\ref{FCNC}]. To avoid the prediction of such currents, we require that each group of fermions (up-type quarks : $Q = \frac{2}{3}$ : u,c,t; down-type quarks : $Q = \frac{-1}{3}$ : d,s,b and charged leptons) couples exactly to one of the two doublets $\phi$ as formulated here :
+\begin{equation}
+    \mathcal{L}_{Yukawa}^{2HDM} \HHquad = \HHquad - Y_d \Bar{Q}_L \Phi_d d_R \HHquad - \HHquad Y_d \Bar{Q}_L \Tilde{\Phi}_u u_R \HHquad - \HHquad Y_l \Bar{L}_L \Phi_l l_R \HHquad + \HHquad h.c.,
+\end{equation}
+with $\Phi_{d, u, l}$ corresponding to either $\phi_1$ or $\phi_2$.\\
+By convention, up-type quarks always couple to $\phi_2$.
+
+Depending on which type of fermions couples to which doublet 
+$\phi$, one can divide two-Higgs-doublet models into the following classes [\ref{types of 2HDM}]: 
+\begin{itemize}
+    \item Type-I : all quarks and charged leptons couple to the same doublet : $\phi_2$
+    \item Type-II : only up-type quarks couple to $\phi_2$, while down-type quarks and charged lepton couple to $\phi_1$
+    \item Type X : all quarks couple to $\phi_2$, while charged leptons couple to $\phi_1$
+    \item  Type Y : up-type quarks and charged leptons couple to $\phi_2$, while down-type quarks couple to $\phi_1$
+\end{itemize}
+The Type-II is the most studied case, since the couplings of the Minimal Super Symmetric Model (MSSM) are a subset of the couplings of Type-II 2HDM.\\
+Another type, called Type-III [\ref{type 3}], exists. It relies on the inclusion of tree-level FCNC. Its goal is to be used for large energy scale (multi-TeV and higher), since, in that case, the previous solution used to exclude FCNCs seems unnatural. [\ref{type 3 bis}]
+
+\subsubsection*{$\mathbb{Z}_2$ symmetry}
+
+The most commonly used symmetry ensuring the absence of FCNCs is the $\mathbb{Z}_2$ symmetry. In the case of 2HDM, with two doublet $\Phi_1$, $\Phi_2$, a $\mathbb{Z}_2$ symmetry transforms the fields as :
+\begin{equation}
+    \mathbb{Z}_2 \Hquad : \Hquad \Phi_1 \rightarrow \Phi_1 \HHquad, \quad \Phi_2 \rightarrow -\Phi_2 \HHquad.
+\end{equation}
+
+\subsubsection*{Couplings to fermions}
+
+To determine the Yukawa couplings, we can rewrite the Yukawa interaction term as :
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\text{Yukawa}}^{\text{2HDM}} &= - \sum_{f = u,d,l} \left( \frac{m_f}{v} \xi^f_h \Bar{f} f h + \frac{m_f}{v} \xi^f_H \Bar{f} f H - i \frac{m_f}{v} \xi^{f}_A \right) \\
+    &\quad - \left[ \frac{\sqrt{2}V_{ud}}{v} \Bar{u} (m_u \xi^u_A P_L + m_d \xi^d_A P_R) dH^+ + \frac{\sqrt{2}m_l}{v} \xi^l_A \nu_l l_R H^+ + \text{h.c.} \right]
+\end{split}
+\end{equation}
+with $P_L$ and $P_R$ are the left and right projection operators, and the factors $\xi^f_H$, $\xi^f_h$, $\xi^f_A$ are parameters defined, in the case of Type-II 2HDM, as :
+\begin{itemize}
+    \item $\xi^u_H = \frac{sin \alpha}{sin \beta}$, $\xi^d_H =\frac{cos \alpha}{sin \beta}$, $\xi^l_H =\frac{cos \alpha}{sin \beta}$,
+    \item $\xi^u_h = \frac{cos \alpha}{sin \beta}$, $\xi^d_h =\frac{-sin \alpha}{sin \beta}$, $\xi^l_h =\frac{-sin \alpha}{sin \beta}$,
+    \item $\xi^u_A = cot \beta$, $\xi^d_A = tan \beta$, $\xi^l_A = tan \beta$.
+\end{itemize}
+
+\subsubsection*{2HDM and Super-symmetry}
+
+Supersymmetry (SUSY) is a very elegant theory in particle physics which predicts the existence of so-called \textit{super-partners} or \textit{spartners} to each of the pre-existing particles in the SM. Each of these spartners would differ by a half-integer value from the spin of the SM particles, meaning that it's a symmetry transforming fermions to bosons and bosons to fermions. Thus, the SM needs to be extended by adding a new elementary particle for every known particle. Then, two point of view exist when it comes the SUSY, one involve a more simple formulation of the theory, with perfectly unbroken symmetry, meaning that particles and their correspondant spartners would have the same mass. On the other hand, there is also formulations about more complex symmetry, involving spontaneously broken symmetry allowing spartners to differ in mass.\\
+
+SUSY would provide a very convenient solution to the hierarchy problem and would also be able to provide a DM candidate. Moreover, it unifies the three interactions at the grand unification theory scale.\\
+The simplest supersymmetric extension to the SM is the Minimal Supersymmetric Standard Model (MSSM) [\ref{mssm}]. Knowing that this model requires a second Higgs doublet, this specific model of SUSY is directly included in the 2HDM.\\
+However, no experimental proofs of SUSY as been found in high energy experiments.
+
+\subsection{Di-Higgs physics}
+
+\subsubsection*{Di-Higgs production}
+
+\todo{prob cohérence entre $\lambda$ et $\kappa_\lambda$ }
+
+The production of Higgs boson pairs inside particle colliders is very rare, a factor of thousand less likely than for the production of a single Higgs boson. The dominant process to produce a Higgs pair is the gluon-gluon fusion ($ggF$), where a Higgs pair can emerge as several types of final states, with probability given by branching decays of each boson shown at Fig. (\ref{h decay}). At leading order (LO), in other words, all vertices in the Feynman diagrams emerge from the lowest-order-Lagrangian, two separate cases appear, represented in the Feynman diagrams at Fig. (\ref{prod_ggf}). It's important to highlight that the box-like diagram is sensitive only to the Higgs-top quark coupling : $\kappa_t$, while the triangle one is sensitive $\kappa_t$ aswell as to the HHH coupling or Higgs self-coupling : $\kappa_\lambda$. There is a destructive interference between these two diagrams resulting in an overall small cross section of di-Higgs production. The total cross section for this process in the
+SM is about $33.47$ fb. [\ref{33.47}]\\
+
+Despite being the most dominant process, gluon-gluon fusion is not the only production channel. Indeed, the vector-boson fusion channel is able to produce pairs of Higgs bosons, despite a cross section being at least one order of magnitude smaller than $ggF$. This channel is still interesting to probe since it gives us access to several different couplings, such as the Higgs boson self-coupling, as in ggF, but also to new couplings like the HHVV coupling : $\kappa_{2V}$ or the HHV one : $\kappa_V$ with V being a W or Z boson.\\
+
+It is also interesting to mention a third di-Higgs boson production channel being via $ggF$ with anomalous Higgs boson coupling. However, this channel won't be discussed in this work.
+
+%The production of Higgs pairs at hadron colliders not only gives information on the Higgs sector but also on the BEH mechanism. It results in several types of final states, with probabilities given by the branching decays of each Higgs boson in the pair. One way of producing a Higgs boson pair is via Higgs self-coupling. Other interactions like the Higgs–fermion Yukawa interactions may also yield to the Higgs pair. Fig. (\ref{prod}) shows the Leading Order (LO) Feynman diagrams for the SM Higgs pair production. The LO means that all vertices in the Feynman diagrams emerge from the lowest-order-Lagrangian. All terms in the lowest-order-Lagrangian are at most of order $Q^2$ in the Taylor expansion of the typical momentum scale $Q$. Consequently, all vertices of LO Feynman diagrams contribute at order $Q^2$ in the Feynman matrix. The triangle diagram is sensitive to the Higgs self-coupling. The destructive interference of the box-like with the triangle diagram results in a small cross section for di-Higgs production. The prediction of the SM for the Higgs pair production cross section is $\sigma_{hh} = 33.49 fb$. The dominant process to produce a Higgs pair is gluon-gluon fusion. Although the cross section of the other pair production channels, like the vector-boson fusion channel, is at least one order of magnitude smaller, they are still interesting due to the different sensitivity to $\lambda$ or to new physics.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.8]{DiHiggs_prod.png}
+    \caption{Production channels for di-Higgs.}
+    \label{prod_ggf}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.5]{DiHiggs_prod_VBF.png}
+    \caption{Vector Boson Fusion (VBF) production channels for di-Higgs.}
+    \label{prod_VBF}
+\end{figure}
+
+\subsection{Purpose of this project}
+
+As stated earlier, the ability of discriminating signal from background is of crucial importance. This is the framework within which this project is being carried out.\\
+The signal we are interested in is the channel $HH \rightarrow  b \Bar{b} \HHquad W^{+} W^-$, being the second largest decay branching fraction. We consider both $W$ bosons decaying to electrons or muons. The main backgrounds to this channel are the DY process, $t \Bar{t}$ production aswell as W + jets events.
+We are going to use a conditional generative adversarial network trained on a sample of Drell-Yan events to generate background samples of the same process. Allowing future researches to have a better grasp of the charateristics of such a background, in order to filter it out efficiently.
+
+\newpage
+
+\input{Text/physics}
+
+\newpage
+
+\section{Neural networks}
+
+In machine learning, a neural network (NN) is a model inspired by the neuronal organization found in the biological neural networks in animal brains.
+
+A NN is made of connected units or nodes called artificial neurons, which loosely model the neurons in a brain. These are connected by edges, which model the synapses in a brain. An artificial neuron receives signals from the previous connected neurons, then processes them and sends a signal to following connected neurons. The "signal" is a real number, and the output of each neuron is computed by some non-linear function of the sum of its inputs, called the activation function. Neurons and edges typically have a weight that adjusts as learning proceeds. The weight increases or decreases the strength of the signal at a connection.\\
+
+Typically, neurons are aggregated into layers. Different layers may perform different transformations on their inputs. Signals travel from the first layer (the input layer) to the last layer (the output layer), possibly passing through multiple intermediate layers (hidden layers). A network is called \textit{shallow} if it has few layers (3 or 4 in total) or \textit{deep} neural network if it has more than 3 or 4 total layers. In this project, we will focus on deep neural networks (DNN).\\
+
+Artificial neural networks are used for predictive modeling, adaptive control, and other applications where they can be trained via a dataset. They are also used to solve problems in artificial intelligence. Networks can learn from experience, and can derive conclusions from a complex and seemingly unrelated set of information.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.135]{Colored_neural_network.svg.png}
+    \caption{Neural network with a single hidden layer}
+\end{figure}
+
+%Opposition de la méthode ABCD et du GAN. Le GAN serait capable de faire tout en un.\\
+%Le GAN serait capable de faire le \textbf{morphing} de lui-même.\\
+
+\subsection{Basic concepts of Neural Network}
+
+\subsubsection*{Artificial neurons}
+
+An artificial neuron is a mathematical model. In most cases, it computes the weighted average of its input and then possibly applies a bias to it, which won't be the case in this work. Afterwards, it passes this result through an activation function. This function is a nonlinear one that accepts a linear input and gives a nonlinear output.\\
+In addition to the connection to other neurons and weights, a threshold can be implemented for every neuron. If the output of any individual node is above the specified threshold value, that node gets activated. In that case, it sends data to the next layer of the network, otherwise, it remains inactive and doesn’t transmit any data to the next layer of neurons. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.8]{ArtificialNeuronModel_english.png}
+    \caption{Operation of an artificial neuron}
+    \label{neuron}
+\end{figure}
+
+
+\subsubsection*{Backpropagation}
+
+In machine learning, backpropagation refers to a method which computes the gradient of a loss function, i.e. a function representing the price paid for inaccuracy of predictions in classification problems, with respect to the weights of the network. It is computing the gradient one layer at a time, iterating backward from the last layer. It is then used to update the different parameters of the network.
+
+\subsubsection*{Exploding and vanishing gradients}
+
+The cases of vanishing and exploding gradients happen during the backpropagation when the slope of the activation function become progressively smaller or greater as we move backward through the layers of the NN. Obviously, this problem gets worse with DNN. The weight updates becomes either extremely small or extremely large, depending on the case, meaning that it will cause to completely stop the training process of the model.\\
+This problem can be adressed by using specific activation functions, or using \textit{batch normalization} [\ref{batch}] that normalizes the inputs of each layers, reducing the risks of vanishing/exploding gradient.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1.1]{exploding_vanishing_grad.png}
+    \caption{Gradients. Left : standard behaviour. Right : Vanishing and exploding gradient}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsubsection*{Under and over-fitting}
+
+When using NNs for supervised learning, the procedure is usually to divide the data sample in 2 differents subsets : the training set (around $75\%$ of the initial set) and the testing set.\footnote{Note that a $3^{rd}$ set, the validation set, can also be used.} However, it can happen that the NN learns too well the training set, as in Fig.(\ref{overfit}). In this case, the model will perform very accurately on the training set, but once it will be tested on the other set, it will result in mediocre performances. In other words, the NN will learn "by-heart" the training set and won't be able to perform satisfyingly on a different sample, e.g. the testing one. This is called \textit{overfitting}. It represents an important challenge in the construction of a NN. One of the main causes of overfitting is a too complex model. Several tools can be used to avoid the overfitting of a model, we are going to discuss some later on.\\
+
+On the order hand, there is underfitting, which represents a lack of training of the model leading to a too simplistic model unable to fit properly the data.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.45]{underfitting_vs_overfitting.png}
+    \caption{Left : underfitting. Middle : fitting. Right : overfitting.}
+    \label{overfit}
+\end{figure}
+
+\subsection{Generative Adversarial Network (GAN)}
+
+A GAN [\ref{GAN original}] is a specific class of machine learning framework used to approach generative modelling. Generative modelling is an unsupervised task, discovering and learning the patterns within the input data in order to generate new, fake but plausible, examples.\\
+The network is divided in two sub-models, the generator and the discriminator, working in an adversarial way. The generator will create plausible examples based on an input sample of real data. The discriminator will determine whether the example provided is from the input sample (actual data) or if it is generated (fake data). Once the discriminator reaches a validity score of about $50\%$, the network is producing credible examples.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.8]{GAN_scheme.png}
+    \caption{Schematical representation of a GAN}
+\end{figure}
+
+The majority of GANs examples available are image-related GANs. The most popular applications are trained on databases such as MNIST [\ref{MNIST}], a set of handwritten digits or CIFAR-10 [\ref{CIFAR10}], which contain many differents datasets, one of them being a set of images of different vehicles such as cars, motorbikes, planes, ... However, in this work, images are not the desired output, we are rather aiming for numerical data. This represents a challenge in comparison to all the documentation available online. Beside the use of GANs in particle physics, application of numerical data GANs are also found in the sector of finances. [\ref{Finance}]\\
+During the most part of this work, the input sample data used has been generated via \textit{MadGraph}. However, actual data can be used as input, leading to a more realistic training sample.\\
+
+In the field of high energy physics, the use of GANs would solve the issue of limited simulated data samples by allowing large generated samples to be produced from much smaller datasets. However, these samples are not perfect, there are intrinsic mismodellings tied to these samples. Thus, it causes some of the largest sources of uncertainty in searches and measurements at the LHC.\\
+In the approach followed in this work, this issue is resolved by \textit{blinding} the data in the signal region (SR) during the training session. It will falsely informs the GAN an absence of event in this region, leading to a generative model predicting a complete lack of background in SR. Afterwards, the prediction of the network can be interpolated or extrapolated into the SR.
+
+\subsubsection*{Activation function}
+
+The activation function of a node in NN is a function that calculates the output of the node based on its individual inputs and their weights. Nontrivial problems can be solved using only a few nodes if the activation function is nonlinear.\\
+There is plenty of activation functions available, we will need to carefully choose the most appropriate to our goal. We can mention some popular functions, such as the sigmoid and the hyperbolic tangeant. They are both nonlinear, which is a crucial criterion in this case. However, the main drawback of these function are their limited sensitivity. Indeed, their nonlinear behaviour only stands in a short interval around 0, decreasing the sensitivity of the network for both large positive and large negative values. Moreover, these are relatively complex function to compute, due to the presence of exponentials in their mathematical formulation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.9]{sigmoid_vs_tanh.jpg}
+    \caption{Activation functions. Left : sigmoid. Right : hyperbolic tangeant}
+    \label{fig:enter-label}
+\end{figure}
+
+Now, we need a nonlinear activation function, with a sensitivity to large values and easy to compute. A function checking \textit{almost} all the boxes is the rectified linear unit (ReLU)[\ref{leaky relu}]. However, ReLU is not sensitive large negative value, as one can see on Fig. (\ref{relu and leaky relu}) which can cause issues. This leads us to our final choice : leaky rectified liner unit (Leaky ReLU). It stands apart from the standard ReLU thanks to the small gradient in the $]- \infty , 0]$ region. It allows the function to stay active for negative values, avoiding the case of a never activating neuron. Thus, it greatly improves the performance of the network despite adding another hyperparameter (let's call it $\alpha$) being the slope of the function in the negative region.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 1.2]{ReLU-activation-function-vs-LeakyReLU-activation-function.png}
+    \caption{Activation functions. Left : ReLU. Right : leaky ReLU}
+    \label{relu and leaky relu}
+\end{figure}
+
+The leaky ReLU is not the only variation of the ReLU function, there is also GELU [\ref{GELU}], ELU [\ref{ELU}], SELU [\ref{SELU}]. Despite being quite recent (less than 10 years), these activation functions are widely used nowadays thanks to their numerous advantages.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.4]{GELU_ELU_ReLU.png}
+    \caption{GELU and ELU function in comparison to standard ReLU}
+    \label{gelu elu}
+\end{figure}
+
+Despite all the advantages of leaky ReLU over the other activation functions, the former is not used for all the layers of the network. Indeed, the output layers of both the generator and discriminator are using the sigmoid function, as adviced in [\ref{Finance}]. One of the advantage is the easier computation of the results, since sigmoid in strictly bounded to $[0,1]$, which isn't the case of any ReLU variant.
+
+\subsubsection*{Batch and batch size}
+Batch size is a crucial component in deep learning training, it represents the number of samples (batches) used in one forward and backward pass through the network and has a direct impact on the accuracy and computational efficiency of the training process. Large batch sizes tends to lead to faster trainings but may result in lower accuracy and overfitting, while smaller batch sizes can provide better accuracy, but can be computationally expensive and time-consuming. The batch size can also affect the convergence of the model, meaning that it can influence the optimization process and the speed at which the model learns. Small batch sizes can be more susceptible to random fluctuations in the training data, while larger batch sizes are more resistant to these fluctuations but may converge more slowly.
+
+\subsubsection*{Binary cross-entropy}
+
+When developping a NN, we need a metric or a function describing the performance of our network, this will help us to optimize our model. If the predictions are close to the actual values, the loss function will be minimum, but if the predictions are far away from the actual values, it will be maximum. \\
+There exist several different loss functions, the best choice depends on the problematic we are facing. In this case, we have a binary classifier (does the example has been generated or does it come from the actual data ?) so we choose a loss function called \textit{binary cross-entropy} [\ref{binary cross entropy}].\\
+The standard cross-entropy is, in short, a tool to measure the difference between two distributions over the same set of events. With the \textit{entropy} being the number of bits required to transmit a randomly selected event from a probability distribution. For example, a skewed distribution has a low entropy while an equal probability distribution has a larger entropy. Another name for \textit{binary cross-entropy} is \textit{log loss}, in that expression it's easy to understand what makes this loss function interesting for us : the use of logarithms. Indeed, these will penalize heavily incorrect predictions. Here's how binary cross-entropy is computed :
+\begin{itemize}
+    \item If the label is 1, the cross-entropy is $-log(p)$ where p is the predicted probability
+    \item but, if the label is 0, the cross-entropy is $-log(1 - p)$.
+\end{itemize}
+Then, the cross-entropy values are summed up for all examples. It can be written, under mathematical notations as : 
+\begin{equation}
+    \text{Log loss} = \frac{1}{N} \sum^N_{i=1} -\left( y_i \log(p_i) + (1-y_i) \log(1-p_i) \right),
+\end{equation}
+where $y_i$ represents the actual class, $p_i$ is the probability of class "1" and $1-p_i$ the probability of class "0".
+%Additionally, it is a differentiable function, making it suitable for gradient-based optimization algorithms used in training neural networks.
+
+\subsubsection*{Stochastic gradient descent optimizer}
+
+Optimization algorithms are frequently used in machine learning to identify the best set of parameters that minimize the loss function.\\
+
+In stochastic gradient descent (SGD) [\ref{SGD v9}], the algorithm quickly learns the direction of steepest descent using a single example of the training set at each time step. While this method has the distinct advantage of being fast, it may never converge to the global minimum. However, it approximates the global minimum closely enough. In practice, SGD is enhanced by gradually reducing the learning rate over time as the algorithm converges. In doing this, we can take advantage of large step sizes to go downhill more quickly and then slow down so as not to miss the global minimum. Due to its speed when dealing with humongous datasets, SGD is a popular choice.\\
+
+It is useful to mention the existence of another popular optimizer : Adam. It has been proven that Adam outperforms SGD (with Nesterov momentum) on the MNIST data set [\ref{Adam}]. However, no performance gap between these two optimizers has been observed in this project.
+
+\subsubsection*{Learning rate}
+
+Learning rate (LR) is a common parameter of optimization algorithms that controls how big a step the gradient descent algorithm takes when tracing its path in the direction of steepest descent in the function space.
+
+If the learning rate is too large, the algorithm takes a large step as it goes downhill. In doing so, gradient descent runs faster, but it has a high chance of missing the global minimum. Conversely, a too small learning rate makes the algorithm slow to converge (i.e., to reach the global minimum), but it is more likely to converge to the global minimum steadily. Empirically, examples of good learning rates are values in the range of 0.001, 0.01, and 0.1. In Fig.(\ref{LR}), with a good learning rate, the cost function $C(\theta)$ should decrease after every iteration.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.45]{Gradient_descent.png}
+    \caption{Learning rates. Left: Small learning rate. Right: Large learning rate.}
+    \label{LR}
+\end{figure}
+
+In lot of low-level cases, the learning rate can be set at a constant value during the whole process of training. However, it is possible to adjust it dynamically during this process in order to reach better performance of the network. Doing so, two important obstacles can be tackled. In one hand, it allows the network to get out of local minima, and thus to converge to the global minimum with greater ease. On the other hand, as already proven [\ref{saddle}], saddle point are also critical points in optimizing paths. The gradients at saddle points tends to be very small and, thus, can slow the learning process. However, tweaking the learning rate allows the rapid traversal of saddle point plateaus.\\
+This will be discussed in greater details in a future section.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.5]{minmaxsaddle.png}
+    \caption{Left : local minimum. Middle : local maximum. Right : saddle poiny}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\subsubsection*{Nesterov momentum}
+
+One issue with SGD is that it can oscillate and take a long time to converge to a minimum, especially when the loss function has a complex structure or is highly non-convex. To mitigate that issue, we can add another parameter to the optimizer : the momentum.
+Momentum is a technique that helps to mitigate this issue by adding a momentum term to the update rule.\\
+
+The momentum term is essentially a weighted average of the past gradients, with the weighting decreasing exponentially as the gradients get further in the past. This helps to smooth out the oscillations, avoid local minima and accelerate convergence by allowing the optimizer to take larger steps in the direction of the minimum.\\
+
+The Nesterov momentum [\ref{Nesterov}] is a variation aiming to improve the traditional momentum by making a subtle yet powerful change to the update rule. Instead of calculating the gradient at the current position, Nesterov’s Momentum calculates the gradient at a position slightly ahead in the direction of the accumulated momentum. This look-ahead step allows the optimizer to correct its course more responsively if it is heading towards a suboptimal direction.\footnote{For a indepth mathematical formulation, please check : [\ref{Nesterov}]}\\  
+%It can be written, in mathematical notation, as : 
+%\begin{itemize}
+%    \item $change(t+1) = (momentum \times change(t)) - (step size \times f'(x(t)))$
+%    \item $x(t+1) = x(t) + change(t+1)$
+%\end{itemize}
+
+\subsubsection*{L2 regularization}
+
+Regularization is used in machine learning to avoid, as much as possible, overfitting. The idea is to add a penalty to the loss function as the model complexity increases such that the importance given to high order terms will decrease.
+
+\begin{equation}
+    J(\theta) = \frac{1}{2m} \left[ \sum^{m}_{i=1} (h_\theta (x^{(i)}) - y^{(i)})^2 + \textcolor{blue}{\lambda \sum^n_{j=1} \theta^2_j} \right], \quad \text{with the goal of minimizing } J(\theta).
+    \label{regu}
+\end{equation}
+
+For L2 regularization in particular, the penalty term (written in blue) added to the loss function is the \textit{squared magnitude} of coefficient. It encourages smaller, more evenly distributed weights.
+
+
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[scale = 0.8]{L2_regu.png}
+%    \caption{Regularization in cost function}
+%    \label{Regu}
+%\end{figure}
+
+\subsubsection*{Dropout layer}
+
+A dropout layer is another type of regularization. The idea is to randomly ignore a subset of neurons of a specific layer during the training session, simulating training multiple neural network architectures to improve generalization.
+
+\subsubsection*{He initialization}
+
+In a NN, when weights are initialized randomly it can pose problem for the convergence of the network. To solve this problem, these weights have to be initialized in a specific way, that depends on the activation used in our model. In this case, we use an appropriate initialization for the (leaky) ReLU function : the \textit{He} weight initialization [\ref{He init}]. The idea behind this concept is to initialize weights in the following range : 
+\begin{equation}
+    N \left[ \left(-\frac{\sqrt{6}}{\sqrt{n_i(1+\alpha^2)}} \HHquad , \HHquad \frac{\sqrt{6}}{\sqrt{n_i(1+\alpha^2)}}  \right)\right]
+\end{equation}
+with $N$ a normal distribution, $n_i$ is the number of incoming network connections in the layer and $\alpha$ is the parameter of leaky ReLU function.\\
+It's also useful to note that initializing weights can help furthermore mitigating exploding and vanishing gradients. 
+
+\subsubsection*{Gradient clipping}
+
+Gradient clipping [\ref{clipping}] adresses the problem of vanishing and/or exploding gradient by imposing a threshold on the gradients. If the gradients exceed this predefined threshold, they are rescaled to ensure they do not surpass the set limit. This rescaling step helps to keep the gradients within a manageable range, thus preventing drastic updates to the model’s parameters that might lead to instability or divergence during training.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.55]{gradient_clipping.png}
+    \caption{Gradient clipping. Left : without gradient clipping. Right : with gradient clipping.}
+    \label{gradient clipping}
+\end{figure}
+
+\subsubsection*{Data preprocessing}
+
+Due to the tools used for this project, standardization of datasets is a requirement for many machine learning estimators. Data might behave badly if the individual features do not more or less look like standard normally distributed data. In other words, Gaussian with zero mean and unit variance.\\
+Several techniques exist, one of the most common one being the normalization/standardization of the input distributions in order to have a new distribution with a mean value of 0 ($\mu = 0$) and standard deviation of 1 ($\sigma = 1$). This process is done independently for each feature of the data. Given the distribution of the data, each value in the dataset will have the mean value subtracted, and then divided by the standard deviation of the whole dataset. In mathematical formulation, it represents : 
+\begin{equation}
+    z = \frac{x - \mu}{\sigma}
+\end{equation}
+\begin{equation}
+    \text{with  } \mu = \frac{1}{N} \sum^N_{i=1} (x_i), \text{ and : } \sigma = \sqrt{\frac{1}{N} \sum^N_{i=1} (x_i - \mu)^2}.
+\end{equation}
+
+However, the method used in this work is a straightforward rescaling of the inputs. Indeed, since the activation functions used in this project are the sigmoid and leaky ReLU, it's convenient to rescale our data as [0,1], since it's the appropriate range for these functions to operate efficiently. Moreover, it helps to improve the stability of the network, which is crucial with a GAN. Neural networks in general are sensitive to the scale of input features, and having all the features within a similar range can prevent some of them to dominate the learning process.\\
+
+Now let's consider a network with several hidden layers. As explained, the data preprocessing relates to the input of our network. From the perspective of the second layer, the output of the first layer simply corresponds to its inputs. Hence, it can be normalized. This concept is called \textit{batch normalization}. [\ref{batch norm}] However, it depends on a momentum parameter, adding yet another hyperparameter to the list.
+
+\subsection{Adaptive learning rate techniques}
+
+As stated in the dedicated section, the learning rate can be a complex hyperparameter to correctly tune. Indeed, both a too large and a too small learning rate will cause a poor training of our model. The most straightforward solution would be to determine judiciously a suitable LR for our model. Unfortunately, it's easier said than done.\\
+A better idea is to have recourse to adaptive learning rates techniques. These methods will dynamically modify the value of LR during the training session, depending on the number of epochs already performed or on the performance of one or several specified metric(s).
+
+\subsubsection{Learning rate scheduler}
+
+This method tends to reduce the value of LR as the training session goes on, following a predefined schedule. The idea is to start with a large LR, in order to get closer quickly to the local minima. Then, the LR will be progressively decreased at each epoch in order to avoid overstepping the targeted minima.\\ 
+However, the behaviour of this schedule has to be defined by the user, adding yet another pseudo-hyperparameter to the already long list of hyperparameters. Indeed, the scheduler can adopt a linear decrease strategy, exponential, time-based or even a step decay one.\\
+Several variations of learning rate schedulers have been used for this project, but none of them have been retained due to a lack of performance improvement. [\ref{LR_S}]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.25]{linear_step_exp_time_decay.png}
+    \caption{Different scheduler behaviours}
+    \label{lrs}
+\end{figure}
+
+\subsubsection{Cyclic learning rate}
+
+As it name may suggests, this method implies the concept of cyclical variation of LR. This technique tackles another important concept beside the local minima : the saddle points. As stated in a previous section, saddle points may slow down the learning process. Moreover our network could stay stuck in a local minimum. To prevent these issues, an important LR is required, here's why the cyclic behaviour is interesting.
+As for learning rate scheduler, there are several possible strategies, let's breakdown the three main ones.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.47\textwidth}
+        \centering
+        \includegraphics[scale = 0.45]{keras_clr_triangular.png}
+        \caption{Cyclic triangular behaviour}
+    \end{subfigure}
+    \hspace{1.3cm}
+    \begin{subfigure}{0.47\textwidth}
+        \centering
+        \includegraphics[scale = 0.45]{keras_clr_triangular2.png}
+        \caption{Decreasing cyclic triangular behaviour}
+        \label{t2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.47\textwidth}
+        \centering
+        \includegraphics[scale = 0.45]{keras_clr_exp_range.png}
+        \caption{Cyclic exponential behaviour}
+        \label{exp}
+    \end{subfigure}
+    \caption{Different cyclical behaviours}
+    \label{CLR types}
+\end{figure}
+
+The (\ref{t2}) and (\ref{exp}) cases mix the concept of "steadily" decreasing LR with cyclical LR. In this work, the decreasing triangular behaviour has been retained due to its better performance with the network.
+
+However, this method isn't included in the \textit{keras.callbacks} package anymore. It could be found in the \textit{tensorflow.addons} package, unfortunately, it is deprecated since no major updates have been made recently. Thus, it may cause package clashes. To address this issue, the method had to be re-implemented with a few improvements.
+
+\subsubsection{Reduce learning rate on plateau}
+
+This technique is a scheduler variant. However, it is not based on the number of epochs performed but rather on the evolution (or absence of evolution) of one or more metric(s). The user needs to specify the metric to monitor as well as a \textit{patience} parameter, i.e. the number of epoch without any improvement of the metric, once this number exceeded a modification of the LR will be applied. Conversely to the other two methods, the change of LR is applied punctually, creating plateaux in the LR evolution, hence its name. [\ref{reduce_lr}]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.3]{ReduceLROnPlateau.png}
+    \caption{Behaviour of the reduce LR on plateau method for both LR and the monitored metric}
+    \label{fig:enter-label}
+\end{figure}
+Despite being trialed, this strategy hasn't been retained.
+
+
+\subsection{Conditional GAN}
+
+A conditional GAN (cGAN) [\ref{cGAN}] is very similar to a standard GAN except it is able to conditionally generate samples based on an additional information provided to both the generator and the discriminator. This additional information is called the \textit{label}, allowing the network to return specific outputs. This level of control isn't available with standard GANs.\\
+In the case of this work, this additional label will be the region of the sample, i.e. : signal region or control region.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.85]{cGAN_scheme.png}
+    \caption{Schematical representation of a cGAN}
+\end{figure}
+
+While training a standard GAN using blinded data it falsely informs the GAN that there are no events in the SR, leading to a generative model which predicts an absence of background events in the SR. Conversely, the cGAN learns the distribution of the background features conditioned on the blinding variable and so, despite being given no information about the background in the SR, can extrapolate its prediction into the SR. The cGAN can then be provided with the inclusive distribution of the blinding variable for all data events, and use what it learns in the unblinded data to interpolate the conditional generative model into the signal region, thereby predicting the values of the other variables.
+
+\subsection{Sample}
+
+For this project, \textit{MadGraph5} [\ref{MadGraph}] has been used to generate a sample of 20.000 MC Drell-Yan events, using the 2HDM extension for \textit{MadGraph5} at $13.6 TeV$. An important comment needs to be done here. In the case of 2HDM, there exist several process resulting in a pair of leptons from a proton-proton interaction, which is not the case in the SM. It is, then, mandatory to specify the mediator bosons expected, in our case : $Z$ and $\gamma$. Indeed, in the 2HDM, the three neutral higgs bosons can be other mediator bosons.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.4]{6_var_distrib.png}
+    \caption{Some relevant observables of the DY sample}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Architecture}
+
+Here is the composition of the cGAN model used for this work :
+\begin{itemize}
+    \item 5 layers for both discriminator and generator with 32 nodes each,
+    \item SGD optimizer with momentum : 0.5 and gradient clipping limited at : 1.0,
+    %\item L2 regularization with $\lambda = 0.01$,
+    \item dimension of the latent vector set to 25,
+    \item He initialization,
+    \item leaky ReLU with $\alpha = 0.4$ for all layers except the last one of both networks, sigmoid otherwise,
+    \item batch size set at 800 with batch normalization momentum at 0.8,
+    \item the learning of the discriminator is set to \textit{False} when the generator is training,
+    \item cyclic learning rate with decreasing triangular behaviour with maximum LR : 0.01, minimum LR : 0.0001, step size = 2000.
+\end{itemize}
+
+\subsection{Technical details}
+
+As mentionned earlier, \textit{MadGraph5} has been used to generate a MC sample. The code has been written in \textit{Python}, using \textit{TensorFlow} [\ref{tf}] and \textit{Keras} [\ref{keras}] packages for the machine learning parts. The \textit{upROOT} [\ref{uproot}] package has been used for big data processing.
+
+\subsection{Challenges}
+
+Although capable of generating very accurate synthetic samples, GANs are also known to be hard to train [\ref{hard to train}] . Training two networks simultaneously means that when the parameters of one model are updated, the optimization problem changes. This creates a dynamic system that is harder to control. Non convergence is a common issue in GAN training. Deep models are usually trained using an optimization algorithm that looks for the lowest point of a loss function, but in a two-player-non-cooperative-game scenario, instead of reaching an equilibrium, the gradients may conflict and never converge, thus missing the global minimum. In other words, if the generator gets too good too fast, it may fool the discriminator and stop getting meaningful feedback, which in turn will make the generator train on bad feedback, leading to a collapse in output quality. An issue remains in the opposite case, even if these two networks are working in an adversarial way, one cannot outperform the other without compromising the performance of the GAN. These are widely known problems and several attempts were made to improve the stability of GANs. [\ref{OpenAI}]
+
+At some point of this project, these issues were translated as such : the same network with the exact same set of hyperparameters can produce a totally different output distribution from one run to another, making it extremely difficult to fine-tune efficiently hyperparameters as no stable benchmark is available. Several methods were used to address this issue, as referenced previously. All of them improved the performance of the network. However, only the cyclical learning rate strategy was retained due to its better efficiency over other methods.\\ 
+Plenty of other improving methods were proposed in this paper : [\ref{OpenAI}].\\
+
+Moreover, a very effective way to adress the stability issue is by adapting our network to the desired goal. Indeed, there exists plenty of variations in GAN architecture, a non-exhaustive but important list can be found in [\ref{list_GAN}].
+
+\newpage
+
+\input{Text/Statistics}
+
+\newpage
+
+\input{Text/Development}
+
+\newpage
+
+\input{Text/Numerical methods}
+\newpage
+
+\section{GANs and other generative modelling methods}
+
+%\textbf{trade-off accuracy/recall/jsp quoi}
+
+Normalizing flows (NFs) [\ref{NF}] are a class of models used in machine learning for generative modelling. The main idea behind normalizing flows is to transform a simple probability distribution, such as a standard Gaussian distribution, into a more complex distribution that closely matches the true distribution.\\ 
+Normalizing flows consist of a series of invertible transformations applied to a simple base distribution. These transformations are designed to gradually deform the base distribution in order to converge to the expected result. Each transformation in the flow must be invertible, meaning that you can easily compute both the forward and inverse transformations.  By chaining together several of these transformations, normalizing flows can model complex data distributions with intricate patterns and dependencies. The final distribution obtained after applying all transformations is a complex, non-Gaussian distribution which should, as closely as possible, matches the data distribution.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.7]{normalizing-flow.png}
+    \caption{Operation of a normalizing flow}
+    \label{Operation of a normalizing flow}
+\end{figure}
+
+In comparison to other generative models, such as GANs and variational autoencoders (VAEs) [\ref{VAE}] , the training process of NFs is much more stable, it is not required to thoroughly fine-tune hyperparameters. Moreover, flow-based algorithms tend to converge faster than other models. However, very high-dimensional latent vectors are necessary, which is usually hard to interpret. Let's go through a short state of the art about this strategy.
+
+%Moreover, on image-related datasets, the samples generated with flow-based algorithms are not as good when compared to GANs and VAEs. Despite these shortcomings, it is important to remember that the field of NFs is still in relative infancy, and is expected to progress quickly in the coming years.\\
+
+Recently, several searches have monitored the efficiency of these generative models on similar tasks in order to compare them efficiently.\\
+First, in 2021, an empirical comparison between GANs and NFs was made [\ref{GAN vs NF}], on different datasets but, with the common point of being low-dimensional data. Both a standard GAN and a WCGAN [\ref{WCGAN}] were used to draw this comparison. Surprisingly, the NF outperforms both type of GANs on several metrics, as kernel density estimation or the very metric on which the WCGAN is based on : the Wasserstein-1 distance. However, this analysis only holds to low-dimensional datasets. There is no certainty that this conclusion could be translated to high-dimensional ones.\\
+Then, in 2022, a comparison between several generative modelling strategies, such as GANs, NFs and VAEs,  was performed. [\ref{GAN NF VAE}] The GAN and its variations are presented as the best performing algorithms in terms of training and test speed, parameter efficiency, sample quality, sample diversity, and ability to scale to high resolution data. However, the gap between GANs and the latest version of other approaches was shrinking at the time the paper was published.\\ 
+Eventually, a search about speech enhancement published in late 2023 [\ref{speech}] takes an interesting approach. Indeed, a new variation of GAN is derived : the SEFGAN. The main idea behind this variant is the use of a NF as generator for the GAN. This article shows that this hybrid approach clearly outperforms a pure NF or pure GAN strategy according to computational metrics and listening experiments done by human listeners.
+
+\newpage
+
+\input{Text/Conclusion}
+
+\newpage
+
+\appendix
+
+\input{Text/List}
+
+\newpage
+
+\section{Bibliography}
+\begin{enumerate}
+    %Global sources
+    \item Uliège thesis \url{https://orbi.uliege.be/bitstream/2268/68445/1/MmemoireFinal.pdf} \label{uliege}
+    \item Florian's thesis
+    \item Main article
+    \item Standard model and beyond course
+    \item Machine learning course
+    \item Fundamental interactions and elementary particles course
+    \item Particle accelerator $\&$ neutrino course
+    %H -> bbWW Agni's paper
+    \item Search for HH production in the bbW+W- decay mode in proton-proton collisions at s = 13 TeV The CMS Collaboration \label{Agni bbww}
+    %Higgs boson
+    \item Amsler, C., et al. « Review of Particle Physics ». Physics Letters B, vol. 667, no 1‑5, septembre 2008, p. 1‑6. DOI.org (Crossref), \url{https://doi.org/10.1016/j.physletb.2008.07.018}. \label{vev}
+    \item InspireHEP. (n.d.). File details - 6dec6d5b7461dfa2693c895eafc4f711. Retrieved April 14, 2024, from \url{https://inspirehep.net/files/6dec6d5b7461dfa2693c895eafc4f711} \label{higgs decay}
+    %Neutrinos
+    \item Dvorkin, Cora, et al. Neutrino Mass from Cosmology: Probing Physics Beyond the Standard Model. arXiv:1903.03689, arXiv, 8 mars 2019. arXiv.org, \url{https://doi.org/10.48550/arXiv.1903.03689}. \label{neutrino mass}
+    %antimatter
+    \item Sakharov, Andrei D. « Violation of CP in Variance, C Asymmetry, and Baryon Asymmetry of the Universe ». Physics-Uspekhi, vol. 34, no 5, mai 1991, p. 392‑93, \url{https://ufn.ru/en/articles/1991/5/h/}. \label{Sakharov}
+    %Dark Matter
+    \item Biermann, Peter L., et Faustin Munyaneza. « The Nature of Dark Matter ». AIP Conference Proceedings, vol. 972, 2008, p. 365‑73. arXiv.org, \url{https://doi.org/10.1063/1.2870344}. \label{cold DM}
+    \item Frost, James. Dark Matter Searches at the LHC. 2022. CERN Document Server, \url{https://cds.cern.ch/record/2843045} \label{DM1}
+    \item Einasto, Jaan. Dark Matter. arXiv:0901.0632, arXiv, 19 octobre 2010. arXiv.org, \url{http://arxiv.org/abs/0901.0632}. \label{DM2}
+    \item Garrett, Katherine (2010). "Dark matter: A primer". Advances in Astronomy. 2011 (968283): 1–22. arXiv:1006.2483 \label{wimps}
+    %Hierarchy problem
+    \item Smith, E. (2019). The Hierarchy Problem. The University of Chicago, QFT III Final Paper,\url{https://homes.psd.uchicago.edu/~sethi/Teaching/P445-S2019/Emily_Smith_QFT_III_Final_Paper.pdf} \label{Hierarchy}
+    \item  « CMS mesure la masse du Higgs avec une précision inédite ». CERN, 3 avril 2024, \url{https://home.cern/fr/news/news/physics/cms-measures-higgs-bosons-mass-unprecedented-precision} \label{higgs mass}
+    \item Tanabashi, M., et al. « Review of Particle Physics* ». Physical Review D, vol. 98, août 2018, p. 030001. NASA ADS, \url{https://doi.org/10.1103/PhysRevD.98.030001}. \label{W mass}
+    %types of 2HDM
+    \item Branco, G. C., et al. « Theory and phenomenology of two-Higgs-doublet models ». Physics Reports, vol. 516, no 1‑2, juillet 2012, p. 1‑102. arXiv.org, \url{https://doi.org/10.1016/j.physrep.2012.02.002}. \label{types of 2HDM}
+    \item CMS Collaboration. « Search for flavor-changing neutral current interactions of the top quark and Higgs boson in final states with two photons in proton-proton collisions at $\sqrt{s} =$ 13 TeV ». Physical Review Letters, vol. 129, no 3, juillet 2022, p. 032001. arXiv.org, \url{https://doi.org/10.1103/PhysRevLett.129.032001}. \label{FCNC}
+    \item Branco, G. C., et al. « Theory and phenomenology of two-Higgs-doublet models ». Physics Reports, vol. 516, no 1‑2, juillet 2012, p. 1‑102. arXiv.org, \url{https://arxiv.org/pdf/1106.0034.pdf} \label{type 3 bis}
+    \item Arhrib, A., et al. « Two-Higgs-Doublet type-II and -III models and $t\to c h$ at the LHC ». The European Physical Journal C, vol. 76, no 6, juin 2016, p. 328. arXiv.org, \url{https://doi.org/10.1140/epjc/s10052-016-4167-9}. \label{type 3}
+    %SUSY
+    \item Wikipedia contributors. (n.d.). Supersymmetry. In Wikipedia. Retrieved April 14, 2024, from \url{https://en.wikipedia.org/wiki/Supersymmetry}.
+    \item Csaki, Csaba. « The Minimal Supersymmetric Standard Model (MSSM) ». Modern Physics Letters A, vol. 11, no 08, mars 1996, p. 599‑613. arXiv.org, \url{https://doi.org/10.1142/S021773239600062X}. \label{mssm}
+    %Di-higgs
+    \item Spira, Michael. « Effective Multi-Higgs Couplings to Gluons ». Journal of High Energy Physics, vol. 2016, no 10, octobre 2016, p. 26. arXiv.org, \url{https://doi.org/10.1007/JHEP10(2016)026}. \label{33.47}
+    %NN_intro
+    \item Wikipedia contributors. (n.d.). Neural network (machine learning). In Wikipedia. Retrieved April 14, 2024, from \url{https://en.wikipedia.org/wiki/Neural_network_(machine_learning)}. \label{NN_wiki}
+    %concept of neurons
+    \item Baeldung. (n.d.). Neural Networks and Neurons in Java. Retrieved April 14, 2024, from \url{https://www.baeldung.com/cs/neural-networks-neurons}. \label{concept of neurons}
+    %Backpropagation /
+    %Exp/van grad 
+    \item Ioffe, Sergey, et Christian Szegedy. Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv:1502.03167, arXiv, 2 mars 2015. arXiv.org, \url{http://arxiv.org/abs/1502.03167}. \label{batch}
+    %Overfitting /
+    %LR + SGD
+    \item Bisong, E. (n.d.). Optimization for Machine Learning: Gradient Descent. In Optimization for Machine Learning (pp. 281-303). Retrieved April 14, 2024, from \url{https://link.springer.com/chapter/10.1007/978-1-4842-4470-8_16}. \label{learning rate + sgd}
+    %GAN
+    \item B. N. S. Reenu. (n.d.). Python for Microscopists. GitHub. Retrieved April 14, 2024, from \url{https://github.com/bnsreenu/python_for_microscopists}.\label{github GAN}
+    \item Eckerli, Florian, et Joerg Osterrieder. Generative Adversarial Networks in finance: an overview. arXiv:2106.06364, arXiv, 6 juillet 2021. arXiv.org, \url{https://arxiv.org/pdf/2106.06364.pdf} \label{Finance}
+    \item Goodfellow, Ian J., et al. Generative Adversarial Networks. arXiv:1406.2661, arXiv, 10 juin 2014. arXiv.org, \url{https://arxiv.org/abs/1406.2661} \label{GAN original}
+    \item  "THE MNIST DATABASE of handwritten digits". Yann LeCun, Courant Institute, NYU Corinna Cortes, Google Labs, New York Christopher J.C. Burges, Microsoft Research, Redmond. \label{MNIST}
+    \item CIFAR-10 and CIFAR-100 datasets. \url{https://www.cs.toronto.edu/~kriz/cifar.html}. Consulté le 14 avril 2024.\label{CIFAR10}
+    %Leaky ReLU 
+    \item Xu, J., Li, Z., Du, B., Zhang, M., & Liu, J. (n.d.). Reluplex made more practical: Leaky ReLU. School of Software Engineering, Tongji University, Shanghai, China; Department of Computer Science, University of Warwick, Coventry, United Kingdom; School of Software Engineering, East China Normal University, Shanghai, China, \url{https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9219587} \label{leaky relu}
+    \item Hendrycks, Dan, et Kevin Gimpel. Gaussian Error Linear Units (GELUs). arXiv:1606.08415, arXiv, 5 juin 2023. arXiv.org, \url{http://arxiv.org/abs/1606.08415}. \label{GELU}
+    \item Clevert, Djork-Arné, et al. Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs). arXiv:1511.07289, arXiv, 22 février 2016. arXiv.org, \url{http://arxiv.org/abs/1511.07289}. \label{ELU}
+    \item Klambauer, Günter, et al. Self-Normalizing Neural Networks. arXiv:1706.02515, arXiv, 7 septembre 2017. arXiv.org, \url{http://arxiv.org/abs/1706.02515}. \label{SELU}
+    %Batch size
+    \item Epochs, Batch Size, Iterations - How They Are Important. \url{https://www.sabrepc.com/blog/Deep-Learning-and-AI/Epochs-Batch-Size-Iterations}. Consulté le 14 avril 2024.
+    %binary cross-entropy
+    \item Ruby, U., & Yendapalli, V. (2020). Binary cross entropy with deep learning technique for image classification. International Journal of Advanced Trends in Computer Science and Engineering, 9(4). DOI: \url{10.30534/ijatcse/2020/175942020}. \label{binary cross entropy}
+    \item Saxena, Shipra. « Binary Cross Entropy/Log Loss for Binary Classification ». Analytics Vidhya, 3 mars 2021,\\
+    \url{https://www.analyticsvidhya.com/blog/2021/03/binary-cross-entropy-log-loss-for-binary-classification/}.
+    %SGD cfr. SGD
+    \item Amari, Shun-ichi. « Backpropagation and stochastic gradient descent method ». Neurocomputing, vol. 5, no 4, juin 1993, p. 185‑96. ScienceDirect, \url{https://doi.org/10.1016/0925-2312(93)90006-O}. \label{SGD v9}
+    \item Kingma, Diederik P., et Jimmy Ba. Adam: A Method for Stochastic Optimization. arXiv:1412.6980, arXiv, 29 janvier 2017. arXiv.org, \url{https://arxiv.org/abs/1412.6980} \label{Adam}
+    %Nesterov
+    \item Xie, Xingyu, et al. Adan: Adaptive Nesterov Momentum Algorithm for Faster Optimizing Deep Models. arXiv:2208.06677, arXiv, 27 février 2023. arXiv.org, \url{https://arxiv.org/pdf/2208.06677.pdf} \label{Nesterov}
+    %L2 regu /
+    %Dropout layer /
+    %He init
+    \item He, Kaiming, et al. Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification. arXiv:1502.01852, arXiv, 6 février 2015. arXiv.org, \url{https://arxiv.org/abs/1502.01852} \label{He init}
+    %Clipping
+    \item Pascanu, Razvan, et al. On the difficulty of training Recurrent Neural Networks. arXiv:1211.5063, arXiv, 15 février 2013. arXiv.org, \url{https://arxiv.org/abs/1211.5063} \label{clipping}
+    %Preprocessing
+    \item Ioffe, Sergey, et Christian Szegedy. Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv:1502.03167, arXiv, 2 mars 2015. arXiv.org, \url{https://arxiv.org/pdf/1502.03167.pdf} \label{batch norm}
+    %CLR
+    \item Dauphin, Yann, et al. Identifying and attacking the saddle point problem in high-dimensional non-convex optimization. arXiv:1406.2572, arXiv, 10 juin 2014. arXiv.org, \url{https://arxiv.org/pdf/1406.2572.pdf}. \label{saddle}
+    %cGan
+    \item Mirza, Mehdi, et Simon Osindero. Conditional Generative Adversarial Nets. arXiv:1411.1784, arXiv, 6 novembre 2014. arXiv.org, \url{https://arxiv.org/abs/1411.1784}. \label{cGAN}
+    %Sample
+    \item MadGraph Development Team. (n.d.). Particle Content. Retrieved April 14, 2024, from \url{http://madgraph.phys.ucl.ac.be/particles.html}.\label{MadGraph}
+    %Challenges
+    \item Wang, Zhengwei, et al. Generative Adversarial Networks in Computer Vision: A Survey and Taxonomy. arXiv:1906.01529, arXiv, 29 décembre 2020. arXiv.org, \url{https://arxiv.org/pdf/1906.01529.pdf}. \label{hard to train}
+    \item Salimans, Tim, et al. Improved Techniques for Training GANs. arXiv:1606.03498, arXiv, 10 juin 2016. arXiv.org, \url{https://arxiv.org/abs/1606.03498}. \label{OpenAI}
+    \item Keras Documentation. (n.d.). LearningRateScheduler. Retrieved April 14, 2024, from \url{https://keras.io/api/callbacks/learning_rate_scheduler/}. \label{LR_S}
+    \item Keras Documentation. (n.d.). ReduceLROnPlateau. Retrieved April 14, 2024, from \url{https://keras.io/api/callbacks/reduce_lr_on_plateau/}.\label{reduce_lr}
+    \item Wang, Zhengwei, et al. Generative Adversarial Networks in Computer Vision: A Survey and Taxonomy. arXiv:1906.01529, arXiv, 29 décembre 2020. arXiv.org, \url{https://arxiv.org/pdf/1906.01529.pdf}. \label{list_GAN}
+    %technical details
+    \item TensorFlow Documentation. (n.d.). Retrieved April 14, 2024, from \url{https://www.tensorflow.org/}. \label{tf}
+    \item Keras Documentation. (n.d.). Retrieved April 14, 2024, from \url{https://keras.io/}. \label{keras}
+    \item PyPI. (n.d.). uproot. Retrieved April 14, 2024, from \url{https://pypi.org/project/uproot/}. \label{uproot}
+    %Kolmogorov-Smirnov
+    \item Massey, Frank J. « The Kolmogorov-Smirnov Test for Goodness of Fit ». Journal of the American Statistical Association, vol. 46, no 253, 1951, p. 68‑78. JSTOR, \url{https://doi.org/10.2307/2280095}. \label{KS test}
+    \item Cuemath. (n.d.). Z-Test Calculator. Retrieved April 14, 2024, from \url{https://www.cuemath.com/data/z-test/} \label{Z test}
+    %Param and nonparam
+    \item « Difference between Parametric and Non-Parametric Methods ». GeeksforGeeks, 8 février 2020,\\
+    \url{https://www.geeksforgeeks.org/difference-between-parametric-and-non-parametric-methods/}.
+    %Monte Carlo
+    \item Rummukainen, K. (n.d.). Monte Carlo simulations in physics. Department of Physical Sciences, University of Oulu, \url{https://www.mv.helsinki.fi/home/rummukai/lectures/montecarlo_oulu/lectures/mc_notes1.pdf}. \label{Monte Carlo}
+    %Morphing
+    \item Verkerke, W. (n.d.). Introduction to Morphing. Nikhef, \url{https://indico.cern.ch/event/507948/contributions/2028505/attachments/1262169/1866169/atlas-hcomb-morphwshop-intro-v1.pdf}. \label{morphing}
+    %ABCD method
+    \item Introduction – Background estimation with the ABCD method. \url{https://cms-opendata-workshop.github.io/workshop-lesson-abcd-method/01-introduction/index.html}. Consulté le 14 avril 2024. 
+    \item CERN. (2018, October 18). ABCD Method Guide. Retrieved from \url{https://twiki.cern.ch/twiki/pub/Main/ABCDMethod/ABCDGuide_draft18Oct18.pdf}. \label{abcd}
+    %cGAN approach
+    \item ATLAS Collaboration. « Search for Higgs boson decays into a $Z$ boson and a light hadronically decaying resonance using 13 TeV $pp$ collision data from the ATLAS detector ». Physical Review Letters, vol. 125, no 22, novembre 2020, p. 221802. arXiv.org, \url{https://doi.org/10.1103/PhysRevLett.125.221802}. \label{atlas z}
+    %POWHEG
+    \item Homepage of the POWHEG BOX. \url{https://powhegbox.mib.infn.it/}. Consulté le 14 avril 2024.
+    \label{POWHEG}
+    %
+    %Physics
+    \item https://atlas.cern/updates/briefing/new-milestone-di-Higgs-search \label{di-higgs decay 20 times}
+    \item Tumasyan, A., et al. « A Portrait of the Higgs Boson by the CMS Experiment Ten Years after the Discovery ». Nature, vol. 607, no 7917, juillet 2022, p. 60‑68. www.nature.com, \url{https://doi.org/10.1038/s41586-022-04892-x}.
+    \label{Nature}
+    \item Davies, C. T. H., et al. « High-Precision Lattice QCD Confronts Experiment ». Physical Review Letters, vol. 92, no 2, January 2004, p. 022001. arXiv.org, \url{https://doi.org/10.1103/PhysRevLett.92.022001}. \label{QCD lattice}
+
+
+    
+    %Generative AI
+    %NF
+    \item Kobyzev, Ivan, et al. « Normalizing Flows: An Introduction and Review of Current Methods ». IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 43, no 11, novembre 2021, p. 3964‑79. arXiv.org, \url{https://doi.org/10.1109/TPAMI.2020.2992934}. \label{NF}
+    %VAE
+    \item Pinheiro Cinelli, Lucas; et al. (2021). "Variational Autoencoder". Variational Methods for Machine Learning with Applications to Deep Networks. Springer. pp. 111–149. \url{doi:10.1007/978-3-030-70679-1_5} \label{VAE}
+    %WCGAN
+    \item Arjovsky, Martin, et al. Wasserstein GAN. arXiv:1701.07875, arXiv, 6 décembre 2017. arXiv.org, \url{https://arxiv.org/abs/1701.07875}. \label{WCGAN}
+    %GAN + NF for speech enhacement
+    \item Strauss, Martin, et al. « SEFGAN: Harvesting the Power of Normalizing Flows and GANs for Efficient High-Quality Speech Enhancement ». 2023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics (WASPAA), 2023, p. 1‑5. arXiv.org, \url{https://doi.org/10.1109/WASPAA58266.2023.10248144}. \label{speech}
+    %Comparison between 3
+    \item Bond-Taylor, Sam, et al. « Deep Generative Modelling: A Comparative Review of VAEs, GANs, Normalizing Flows, Energy-Based and Autoregressive Models ». IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 44, no 11, novembre 2022, p. 7327‑47. arXiv.org, \url{https://doi.org/10.1109/TPAMI.2021.3116668}. \label{GAN NF VAE}
+    %GAN vs NF
+    \item Liu, Tianci, et Jeffrey Regier. An Empirical Comparison of GANs and Normalizing Flows for Density Estimation. arXiv:2006.10175, arXiv, 14 décembre 2021. arXiv.org, \url{https://doi.org/10.48550/arXiv.2006.10175}. \label{GAN vs NF}
+    
+\end{enumerate}
+
+\end{document}

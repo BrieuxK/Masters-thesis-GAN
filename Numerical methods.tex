@@ -1,0 +1,84 @@
+\section{Numerical methods}
+
+As stated many times in this work, the background modeling is a crucial component to the success of an experiment in high energy physics. To achieve this, several strategies are available : data-driven methods, Monte Carlo simulations, parametric and non-parametric methods among others. For basic cases, data-driven background estimation methods are sufficient to estimate the expected number of background events. Unfortunately, these basic cases only represents a minority. In most cases, background modeling relies on direct simulation based on Monte Carlo (MC) event generators or parametric method.\\
+However, for even more intricate situations, these two techniques fall short. The problem is, despite a sufficient background modelling concerning some of its components, it is not enough to accurately predict the characteristics of the total background. That's the problem tackled in this thesis.\\
+Indeed, in this work we address the background modelling of the Drell-Yan process, for di-Higgs physics. The other components of the total background, i.e $t \Bar{t}$ production and $W+jets$ events, can be fairly easily modelled. However, this isn't the case for DY due to its varying final state signature. To achieve our goal, we use a \textit{non-parametric data-driven background modelling} method, via a cGAN. Let's briefly breakdown what this expression actually means.
+
+\subsection{Parametric and non-parametric methods}
+
+\subsubsection*{Parametric}
+Parametric methods are statistical techniques relying on specific assumptions about the underlying distribution of the population being studied. These methods typically assume that the data follows a known probability distribution, such as the normal distribution, and estimate the parameters of this distribution using the available data. Parametric methods are those methods for which we a priori know that the population follows a Gaussian distribution, or if not then we can easily approximate it using such a distribution. In addition to the Gaussian assumptions, these techniques also assume the independence between observations aswell as a homogeneous variance over the set of events.
+For normal distributions, the parameters are : the mean ($\mu$) and the standard deviation ($\sigma$).\\
+
+The efficency of this category of methods heavily relies on whether or not the assumptions are met. If that's the case, these techniques are very powerful (i.e. able to detect a real effect when it exists), even working on a reduce set of events. However, it makes those a very rigid option, which may not capture complex relationships between variables.
+
+\subsubsection*{Non-parametric}
+
+Conversely to the previous category of methods, non-parametric ones do not rely on specific assumptions of parameters. In fact, they don't depend at all on the population studied. Hence, there are no parameters or distributions needed. However, some assumptions about the data are still required as the independence of observations or the homogeneity of measurements.
+Conversely to parametric methods, non-parametric ones are widely applicable due to their independence to the studied population, their easy implementation and their robustness to outliers.
+However, when the assumptions of parametric methods are met, these ones remain more powerful and require smaller sample to achieve the same level of power.\\
+
+Some examples of non-parametric methods used for LHC data analysis are Kernel Density Estimation (KDE) used to estimate the probability density function of a random variable based on a sample of data. It can be used to visualize the distribution of a specific observable without the assumption of a parametric form for the distribution. Moreover, Random Forest algorithms (an advanced version of decision trees) are also non-parametric approaches. These machine learning algorithms are used to perform classification and regression tasks based on the characteristics of the events/particles probed, without, once again, assuming a specific parametric form for the underlying data distribution.
+
+In this thesis, complex relationships are expected among the variables simulated by our GAN. Hence, we choose to work with non-parametric methods due to their flexibility and low-computational cost.
+
+\subsection{Data-driven methods}
+
+Data-driven methods are a class of methods that primarily rely on current data collected during the system's/process' lifetime in order to establish relationships between input, internal and output variables. Their aim is to efficiently process and analyze large datasets. Hence their usefulness for the generalization of our cGAN to samples of considerable size.\\
+The term data-driven modeling refers to the use of current data merged with advanced computational techniques, as machine learning, to create models revealing underlying trends and patterns between variables of a same dataset. Moreover, data-driven models can be built with or without detailed knowledge of the underlying processes governing the system behavior, which makes them particularly useful when such knowledge is not in our possession. Hence, data-driven background estimates are a must in situations where you cannot get a reliable estimate from simulation.\\
+
+Such methods are extensively used in the scope of data analysis at the LHC. For jet mass reconstruction, some very important variables are determined thanks to data-driven approach. Indeed, both ATLAS and CMS developped tagging algorithms for jets, that includes an array of validation and calibration techniques processed in a data-driven manner.
+
+\subsubsection{ABCD method}
+
+The ABCD method [\ref{abcd}] is a common use to get data-driven background estimation, as seen in [\ref{Agni bbww}] one of the main paper this work is based on. The idea behind this method is illustrated in Fig.(\ref{fig:abcd}).
+The phase space is divided into four different regions, each defined by variables uncorrelated to each other. The region D is the \textit{signal region}, in other words, the phase space region defined by the triggers and selections used for the signal we are interested in. While the other regions (A, B, C) are the \textit{control regions}, these are obtained by modifying some of the cuts used for the signal selection, in order to obtain similar regions to the signal one, with the important difference that control regions do not contain any signal \footnote{In an ideal case, there is no signal at all. However, some signal might be present in these control regions, but the ratio signal-over-background ratio will remain tiny.}.  Control regions are usually defined over a specific background process, with enough events to insure sufficient statistics. The shape of the background process can then be estimated as a function of one or several variables.
+These regions can also be referred as \textit{sidebands} in cases where the signal appears as a resonance peak. Signal region is then a specific window and the control regions are on both sides on this windows, hence the name sidebands.
+
+Although the control regions are defined to be as similar as possible to the signal region, some differences in the selection efficiency for the background process may happen between these two regions. Thus, the control region is corrected by deriving additional events weights called \textit{transfer factors}. To determine these factors, we use the two remainings regions : A and B. We assume that the ratio between A and B is defined by the same cuts than the ratio between C and D. Transfer factors are then determined by the change of background from A to B, and they are then applied to C.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{ABCD_method.png}
+    \caption{Representation of the ABCD method}
+    \label{fig:abcd}
+\end{figure}
+
+\subsection{Shortcomings of Monte Carlo simulations}
+
+The Monte Carlo (MC) simulations are a broad class of computational algorithms.\footnote{The intrinsic operation of MC simulations won't be addressed here, since it is of no use in this work. For more information, please see [\ref{Monte Carlo}].} These simulations are very widespread in many fields, such as high energy physics.
+Despite their numerous advantages, MC techniques hold several heavy limitations, common to all their applications. These include : high computational cost, especially with complex model accounting many variables; heavy reliance on quality input data and on the different assumptions made; aswell as a difficult result interpretation, especially for cases without a strong statistical background. Moreover, when it comes to high energy physics, there also problems coming from imperfect modelling of the detectors and limitations due to fixed-order calculations, meaning that only a finite number of terms in the perturbative expansion are considered.\\
+For all those reasons, we cannot entirely rely on MC simulations. Hence the need of the new approach discussed in this work.
+
+\subsection{b-tagging algorithms}
+
+The identification (tagging) of the jets coming from the hadronization of heavy flavor quarks, such as bottom quarks, is made possible by the use of data-driven approaches and by distinctive properties of the heavy hadrons. For instance, B-hadrons have a relatively large lifetime ($\mathcal{O}(1.5ps)$) leading them to travel measurable flight length path of a few millimeters before their decay into lighter hadrons. Thus, creating a secondary vertex clearly distinct from the main one.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.19]{B-tagging_diagram.png}
+    \caption{Secondary vertex from a b-jet}
+    \label{fig:enter-label}
+\end{figure}
+
+Moreover, B-hadrons are massive which leads to decay products with larger tranverse momentum (relative to the jet axis) in comparison to jets produced by lighter partons.
+
+B-tagging algorithms have become a crucial components in current data analysis. For instance, for the search of the Higgs boson in the $t\Bar{t}H$ channel, these algorithms were used to reduce or even eliminate large backgrounds like $t\Bar{t}j\Bar{j}$ or $W+jets$. Indeed, the $t\Bar{t}j\Bar{j}$ background was reduced by two orders of magnitude only using b-jets identification.\\
+When it comes to current experiments, such algorithms remain a crucial component for a successful analysis. Indeed, in the channel probed in this work ($\Bar{b}bW^+W^-$), top quarks are decaying into $b$'s, hence the need of b-tagging algorithms. Moreover, the additional label information used by the cGAN directly depends on b-tagging information since it is a solid criterion to separate the signal region from the background one. Indeed, DY events are not expected to produce two b-jets.
+
+
+\subsection{Morphing}
+
+In high energy physics, "morphing" refers to a technique used to interpolate between different simulated events or physical models seamlessly. It allows the exploration of the behaviour of a physical system over a continuous parameter space without the need of plenty of discrete, independent simulations at each point in the parameter space. Morphing techniques typically involve constructing a parameterized mapping between the original and target parameter spaces, often using mathematical functions or interpolation methods. This mapping allows for the generation of simulated events corresponding to intermediate parameter values, providing a more comprehensive understanding of the physics being studied.\\
+
+In the LHC, the use of morphing techniques for systematic uncertainties is a very common thing. These methods are used to assess the impact of systematic uncertainties on measurements of several parameters as mass, cross-section, ... For example, for uncertainties of the simulation of a physical process, morphing techniques can smoothly interpolate to different simulation in order to estimate the effect of these uncertainties on the final result. [\ref{morphing}]
+
+\subsection{Application of the cGAN-based approach}
+
+In the paper which this thesis is based on, an ATLAS search [\ref{atlas z}] for Higgs boson decaying to a $Z$ boson and a light hadronically decaying resonance $a$ is taken as case study. In the ATLAS original paper, several of the above techniques are used to perform the analysis. Indeed, a variant of the ABCD method and a MC-based method are used to account for the correlation between several variables.  This search is facing two main obstacles : first, for a $\mathcal{O}(100fb^{-1})$ dataset, it is impossible to generate a simulated event sample with a comparable statistical power. Second, the decaying resonance $a$ is identified with a multi-variate methods, requiring a detailed modelling of a several correlations between variables related to kinematics and jets. The sensitivity of the initial search is thus limited by systematic and statistical uncertainties. 
+%The sensitivity of the initial search is thus limited by the background systematic uncertainties, mainly coming from the insufficient size of the simulated data samples used. 
+
+Both of these obstacles come from the insufficient size of simulated samples implied by the techniques used originally. However, the cGAN-based approach is able to overcome these. Indeed, with the possibility of generating larger samples, the statistical uncertainties could be suppressed. Thus, allowing a performance improvement, as proved in the case study mentionned. There will still be some remaining uncertainties coming from the training of the cGAN. To mitigate these, we plan to run several networks (5, typically) and combine their results.
+Moreover, the cGAN is able to target a region (e.g. signal region, background region,...) in which the data will be generated, which is impossible with the current methods. This approach could also be directly based on real data and not MC simulations. Indeed, we could use the official CMS data as a training sample for the network.
+
+This is exactly what this work aims to do, but for a different purpose. As mentionned in [\ref{Agni bbww}], for the di-Higgs physics $b \Bar{b}W^+W^-$ final state, several backgrounds are considered such as : $t \Bar{t}+jets$, single-top production, $WW$ processes as well as Drell-Yan among others. Despite not being generated with the same softwares (\textit{MadGraph5\_aMC@NLO} for DY, \textit{POWHEG} [\ref{POWHEG}] for the others mentionned), these backgrounds components are still coming from the same simulation strategy : Monte Carlo. In addition, a very similar approach to the ABCD method is also used to estimate DY events. We want to assess whether or not the cGAN approach is viable alternative to the "MC + ABCD + morphing" combination for the $b \Bar{b}W^+W^-$ case.\\
