@@ -148,6 +148,8 @@ sample
 
 #Hard cut on muons
 sample = sample[sample[:, 0] >= 20]
+#Hard cut on b-jets
+sample = sample[sample[:, -1] <= 2]
 
 #Cuts on observables
 pt_cut = [0,100]
@@ -164,6 +166,14 @@ met_cut = [0, 100]
 
 sample_new_v2 = cms_cut(sample, pt_cut, invM_cut, met_cut)
 print(len(sample_new_v2))
+#%%
+cnt = 0
+for i in sample_new[:,-1]:
+    if i == 3:
+        cnt += 1
+print(cnt/len(sample_new)) #16% of events with at least 1 b-jets
+#4.7% of events with at least 2 b-jets
+#0.3% of events with at least 3 b-jets
 #%%
 
 min(sample_new[:,0])
@@ -687,13 +697,13 @@ fig.colorbar(axs[1].collections[0], ax=axs[1])
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
 # Plot contour for the first pair of variables
-axs[0].hist2d(arg, arg11, bins=(80, 80), range=[[0, 80], [0, 30]], cmap=plt.cm.rainbow, alpha = 1)
+axs[0].hist2d(arg, arg11, bins=(80, 80), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
 axs[0].set_xlabel(keys_f[0], fontsize = 12)
 axs[0].set_ylabel(keys_f[1], fontsize = 12)
 axs[0].set_title("Outputs", fontsize = 15)
 fig.colorbar(axs[0].collections[0], ax=axs[0])
 
-axs[1].hist2d(arg2, arg211, bins=(100, 100), range=[[0, 80], [0, 30]], cmap=plt.cm.rainbow, alpha = 1)
+axs[1].hist2d(arg2, arg211, bins=(100, 100), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
 axs[1].set_xlabel(keys_f[0], fontsize = 12)
 axs[1].set_ylabel(keys_f[2], fontsize = 12)
 axs[1].set_title("Inputs", fontsize = 15)
@@ -702,17 +712,146 @@ fig.colorbar(axs[1].collections[0], ax=axs[1])
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
 # Plot contour for the first pair of variables
-axs[0].hist2d(arg1, arg11, bins=(80, 80), range=[[50, 130], [0, 30]], cmap=plt.cm.rainbow, alpha = 1)
+axs[0].hist2d(arg1, arg11, bins=(80, 80), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
 axs[0].set_xlabel(keys_f[1], fontsize = 12)
 axs[0].set_ylabel(keys_f[2], fontsize = 12)
 axs[0].set_title("Outputs", fontsize = 15)
 fig.colorbar(axs[0].collections[0], ax=axs[0])
 
-axs[1].hist2d(arg21, arg211, bins=(100, 100), range=[[50, 130], [0, 30]], cmap=plt.cm.rainbow, alpha = 1)
+axs[1].hist2d(arg21, arg211, bins=(100, 100), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
 axs[1].set_xlabel(keys_f[1], fontsize = 12)
 axs[1].set_ylabel(keys_f[2], fontsize = 12)
 axs[1].set_title("Inputs", fontsize = 15)
 fig.colorbar(axs[1].collections[0], ax=axs[1])
+#########################################################################################
+#%%
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot contour for the first pair of variables
+axs[0].hist2d(arg, arg1, bins=(80, 80), range=[[0, 80], [0, 125]], cmap=plt.cm.rainbow, alpha = 1)
+axs[0].set_xlabel(keys_f[0], fontsize = 12)
+axs[0].set_ylabel(keys_f[1], fontsize = 12)
+axs[0].set_title("Outputs", fontsize = 15)
+fig.colorbar(axs[0].collections[0], ax=axs[0])
+
+axs[1].hist2d(arg2, arg21, bins=(80, 80), range=[[0, 80], [0, 125]], cmap=plt.cm.rainbow, alpha = 1)
+axs[1].set_xlabel(keys_f[0], fontsize = 12)
+axs[1].set_ylabel(keys_f[1], fontsize = 12)
+axs[1].set_title("Inputs", fontsize = 15)
+fig.colorbar(axs[1].collections[0], ax=axs[1])
+#%%
+
+h1, xedges1, yedges1 = np.histogram2d(arg, arg1, bins=(80, 80), range=[[0, 80], [0, 125]])
+h2, xedges2, yedges2 = np.histogram2d(arg2, arg21, bins=(80, 80), range=[[0, 80], [0, 125]])
+
+# Determine global min and max values for the color scale
+vmin = min(h1.min(), h2.min())
+vmax = max(h1.max(), h2.max())
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot 2D histogram for the first pair of variables
+h1_plot = axs[0].hist2d(arg, arg1, bins=(80, 80), range=[[0, 80], [0, 125]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=vmax)
+axs[0].set_xlabel(keys_f[0], fontsize=12)
+axs[0].set_ylabel(keys_f[1], fontsize=12)
+axs[0].set_title("Outputs", fontsize=15)
+fig.colorbar(h1_plot[3], ax=axs[0])
+
+# Plot 2D histogram for the second pair of variables
+h2_plot = axs[1].hist2d(arg2, arg21, bins=(80, 80), range=[[0, 80], [0, 125]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=vmax)
+axs[1].set_xlabel(keys_f[0], fontsize=12)
+axs[1].set_ylabel(keys_f[1], fontsize=12)
+axs[1].set_title("Inputs", fontsize=15)
+fig.colorbar(h2_plot[3], ax=axs[1])
+
+plt.tight_layout()
+plt.show()
+
+#%%
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot contour for the first pair of variables
+axs[0].hist2d(arg, arg11, bins=(80, 80), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
+axs[0].set_xlabel(keys_f[0], fontsize = 12)
+axs[0].set_ylabel(keys_f[2], fontsize = 12)
+axs[0].set_title("Outputs", fontsize = 15)
+fig.colorbar(axs[0].collections[0], ax=axs[0])
+
+axs[1].hist2d(arg2, arg211, bins=(100, 100), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
+axs[1].set_xlabel(keys_f[0], fontsize = 12)
+axs[1].set_ylabel(keys_f[2], fontsize = 12)
+axs[1].set_title("Inputs", fontsize = 15)
+fig.colorbar(axs[1].collections[0], ax=axs[1])
+#%%
+
+h1, xedges1, yedges1 = np.histogram2d(arg, arg11, bins=(80, 80), range=[[0, 80], [0, 125]])
+h2, xedges2, yedges2 = np.histogram2d(arg2, arg211, bins=(80, 80), range=[[0, 80], [0, 125]])
+
+# Determine global min and max values for the color scale
+vmin = min(h1.min(), h2.min())
+vmax = max(h1.max(), h2.max())
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot 2D histogram for the first pair of variables
+h1_plot = axs[0].hist2d(arg, arg11, bins=(80, 80), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=0.2*vmax)
+axs[0].set_xlabel(keys_f[0], fontsize=12)
+axs[0].set_ylabel(keys_f[2], fontsize=12)
+axs[0].set_title("Outputs", fontsize=15)
+fig.colorbar(h1_plot[3], ax=axs[0])
+
+# Plot 2D histogram for the second pair of variables
+h2_plot = axs[1].hist2d(arg2, arg211, bins=(80, 80), range=[[0, 80], [0, 60]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=0.2*vmax)
+axs[1].set_xlabel(keys_f[0], fontsize=12)
+axs[1].set_ylabel(keys_f[2], fontsize=12)
+axs[1].set_title("Inputs", fontsize=15)
+fig.colorbar(h2_plot[3], ax=axs[1])
+
+plt.tight_layout()
+plt.show()
+
+#%%
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot contour for the first pair of variables
+axs[0].hist2d(arg1, arg11, bins=(80, 80), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
+axs[0].set_xlabel(keys_f[1], fontsize = 12)
+axs[0].set_ylabel(keys_f[2], fontsize = 12)
+axs[0].set_title("Outputs", fontsize = 15)
+fig.colorbar(axs[0].collections[0], ax=axs[0])
+
+axs[1].hist2d(arg21, arg211, bins=(100, 100), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha = 1)
+axs[1].set_xlabel(keys_f[1], fontsize = 12)
+axs[1].set_ylabel(keys_f[2], fontsize = 12)
+axs[1].set_title("Inputs", fontsize = 15)
+fig.colorbar(axs[1].collections[0], ax=axs[1])
+#%%
+
+h1, xedges1, yedges1 = np.histogram2d(arg1, arg11, bins=(80, 80), range=[[0, 80], [0, 125]])
+h2, xedges2, yedges2 = np.histogram2d(arg21, arg211, bins=(80, 80), range=[[0, 80], [0, 125]])
+
+# Determine global min and max values for the color scale
+vmin = min(h1.min(), h2.min())
+vmax = max(h1.max(), h2.max())
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Plot 2D histogram for the first pair of variables
+h1_plot = axs[0].hist2d(arg1, arg11, bins=(80, 80), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=vmax)
+axs[0].set_xlabel(keys_f[1], fontsize=12)
+axs[0].set_ylabel(keys_f[2], fontsize=12)
+axs[0].set_title("Outputs", fontsize=15)
+fig.colorbar(h1_plot[3], ax=axs[0])
+
+# Plot 2D histogram for the second pair of variables
+h2_plot = axs[1].hist2d(arg21, arg211, bins=(80, 80), range=[[50, 130], [0, 60]], cmap=plt.cm.rainbow, alpha=1, vmin=vmin, vmax=vmax)
+axs[1].set_xlabel(keys_f[1], fontsize=12)
+axs[1].set_ylabel(keys_f[2], fontsize=12)
+axs[1].set_title("Inputs", fontsize=15)
+fig.colorbar(h2_plot[3], ax=axs[1])
+
+plt.tight_layout()
+plt.show()
 #%%
 from scipy.stats import ks_2samp
 
